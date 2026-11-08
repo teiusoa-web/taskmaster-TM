@@ -1,0 +1,26 @@
+## Dependencies
+node_modules/
+
+## Local secrets and environment configuration
+.env
+.env.*
+!.env.example
+
+## Local account records, database, and temporary writes
+data/users.json
+data/users.json.tmp
+data/database.json
+data/database.json.tmp
+data/*.tmp
+
+## User generated uploads and backups
+data/uploads/**
+!data/uploads/.gitkeep
+data/backups/**
+!data/backups/.gitkeep
+
+## OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

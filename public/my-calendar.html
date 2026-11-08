@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L&#7883;ch tu&#7847;n - TaskMaster</title>
+  <link rel="stylesheet" href="css/reset.css"><link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="auth-pending">
+  <div class="app-container">
+    <aside class="sidebar">
+      <a href="index.html" class="sidebar-brand"><div class="brand-icon">TM</div><div class="brand-text">Task<span>Master</span></div></a>
+      <nav class="sidebar-nav"><a href="index.html" class="nav-link"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1-1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          Dashboard Thống Kê
+        </a><a href="tasks.html" class="nav-link"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+          Danh sách công việc
+        </a><a href="task-form.html" class="nav-link"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          Thêm mới công việc
+        </a><a href="categories.html" class="nav-link"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+          Quản lý danh mục
+        </a></nav>
+      <div class="sidebar-footer"><div class="author-card"><div class="avatar"></div><div class="author-info"><h4></h4><p></p></div></div></div>
+    </aside>
+    <main class="main-wrapper">
+      <header class="top-navbar"><div class="navbar-left"><button class="mobile-menu-btn" aria-label="M&#7903; menu"><svg class="menu-open-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg><svg class="menu-close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"/></svg></button><h1 class="page-title page-title-with-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 012 2v14H3V6a2 2 0 012-2z"/></svg>L&#7883;ch tu&#7847;n</h1></div><div class="navbar-right"></div></header>
+      <div class="page-body">
+        <section class="card week-toolbar"><div><span class="eyebrow">K&#7870; HO&#7840;CH C&#193; NH&#194;N</span><h2 id="week-label">Tu&#7847;n n&#224;y</h2></div><div class="week-controls"><button class="btn btn-secondary" id="week-prev" type="button">Tu&#7847;n tr&#432;&#7899;c</button><button class="btn btn-secondary" id="week-today" type="button">H&#244;m nay</button><button class="btn btn-secondary" id="week-next" type="button">Tu&#7847;n sau</button></div></section>
+        <section class="week-calendar" id="week-calendar" aria-live="polite"></section>
+        <section class="card unscheduled-card"><h2>Ch&#432;a c&#243; h&#7841;n ch&#243;t</h2><div id="unscheduled-tasks" class="unscheduled-list"></div></section>
+      </div>
+    </main>
+  </div>
+  <script type="module" src="js/main.js"></script><script type="module" src="js/calendar.js"></script>
+  <script type="module" src="js/theme.js"></script>
+</body>
+</html>

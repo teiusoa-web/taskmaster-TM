@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thông Tin Công Việc - TaskMaster</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="auth-pending">
+  <div class="app-container">
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="sidebar">
+      <a href="index.html" class="sidebar-brand" aria-label="TaskMaster home"><div class="brand-icon">✓</div>
+        <div class="brand-text">Task<span>Master</span></div></a>
+
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          Dashboard Thống Kê
+        </a>
+        <a href="tasks.html" class="nav-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+          Danh sách công việc
+        </a>
+        <a href="task-form.html" class="nav-link active">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          Thêm mới công việc
+        </a>
+        <a href="categories.html" class="nav-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+          Quản lý danh mục
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="author-card">
+          <div class="avatar"></div>
+          <div class="author-info">
+            <h4></h4>
+            <p></p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-wrapper">
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button class="mobile-menu-btn" aria-label="Mở menu" aria-expanded="false"><svg class="menu-open-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg><svg class="menu-close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"/></svg></button>
+          <h1 class="page-title" id="form-page-title">Thêm Mới Công Việc</h1>
+        </div>
+        <div class="navbar-right">
+          <a href="tasks.html" class="btn btn-secondary btn-sm">Quay lại danh sách</a>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+          <form id="task-form" novalidate>
+            <!-- Tên công việc -->
+            <div class="form-group">
+              <label for="task-title" class="form-label">Tên công việc <span class="required">*</span></label>
+              <input type="text" id="task-title" class="form-control" placeholder="Ví dụ: Thiết kế giao diện Dashboard..." required />
+            </div>
+
+            <!-- Grid 2 cột: Danh mục & Hạn chót -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+              <div class="form-group">
+                <label for="task-category" class="form-label">Danh mục / Dự án <span class="required">*</span></label>
+                <input type="text" id="task-category" class="form-control" list="category-suggestions" autocomplete="off" placeholder="Nh&#7853;p ho&#7863;c ch&#7885;n danh m&#7909;c / d&#7921; &#225;n" required />
+                <datalist id="category-suggestions"></datalist>
+              </div>
+
+              <div class="form-group">
+                <label for="task-deadline" class="form-label">Hạn chót hoàn thành (Deadline) <span class="required">*</span></label>
+                <input type="date" id="task-deadline" class="form-control" required />
+              </div>
+            </div>
+
+            <div class="form-group" id="task-assignee-group">
+              <label for="task-assignee" class="form-label">Ng&#432;&#7901;i &#273;&#432;&#7907;c giao</label>
+              <select id="task-assignee" class="form-control"><option value="" selected disabled>Ch&#7885;n t&#224;i kho&#7843;n nh&#7853;n vi&#7879;c</option></select>
+            </div>
+
+            <section class="initial-checklist-section" id="initial-checklist-group" aria-labelledby="initial-checklist-heading">
+              <div class="initial-checklist-heading"><div><h2 id="initial-checklist-heading">Checklist c&#244;ng vi&#7879;c</h2><p>Th&#234;m t&#249;y s&#7889; b&#432;&#7899;c c&#7847;n thi&#7871;t; c&#7847;n &#237;t nh&#7845;t m&#7897;t m&#7909;c.</p></div><span class="initial-checklist-count" id="initial-checklist-count">1 m&#7909;c</span></div>
+              <div id="initial-checklist-items">
+                <div class="initial-checklist-row"><label class="form-group" for="initial-checklist-1"><span class="form-label">M&#7909;c 1</span><input class="form-control initial-checklist-input" id="initial-checklist-1" type="text" maxlength="180" placeholder="V&#237; d&#7909;: Thu th&#7853;p y&#234;u c&#7847;u" required></label></div>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm initial-checklist-add" id="add-initial-checklist-item">+ Th&#234;m m&#7909;c checklist</button>
+              <small class="initial-checklist-error" id="initial-checklist-error" role="alert" hidden>Vui l&#242;ng nh&#7853;p &#237;t nh&#7845;t m&#7897;t m&#7909;c checklist.</small>
+            </section>
+
+            <!-- Mức ưu tiên -->
+            <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+              <div class="form-group">
+                <label for="task-priority" class="form-label">Mức độ ưu tiên</label>
+                <select id="task-priority" class="form-control">
+                  <option value="low">Thấp (Có thể làm sau)</option>
+                  <option value="medium" selected>Trung bình</option>
+                  <option value="high">Cao (Gấp / Quan trọng)</option>
+                </select>
+              </div></div>
+
+            <!-- Mô tả chi tiết -->
+            <div class="form-group" id="task-recurrence-group"><label for="task-recurrence" class="form-label">L&#7863;p l&#7841;i c&#244;ng vi&#7879;c</label><select id="task-recurrence" class="form-control"><option value="none">Kh&#244;ng l&#7863;p</option><option value="weekly">H&#224;ng tu&#7847;n sau khi ho&#224;n th&#224;nh</option><option value="monthly">H&#224;ng th&#225;ng sau khi ho&#224;n th&#224;nh</option></select><small class="text-muted">C&#244;ng vi&#7879;c k&#7871; ti&#7871;p s&#7869; t&#7921; t&#7841;o khi admin duy&#7879;t ho&#224;n th&#224;nh.</small></div>
+            <div class="form-group">
+              <label for="task-description" class="form-label">Mô tả chi tiết công việc</label>
+              <textarea id="task-description" class="form-control" rows="4" placeholder="Nhập ghi chú, mục tiêu, hoặc yêu cầu cụ thể..."></textarea>
+            </div>
+
+            <!-- Nút Lưu & Hủy -->
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+              <a href="tasks.html" class="btn btn-secondary">Hủy bỏ</a>
+              <button type="submit" class="btn btn-primary" id="btn-submit">
+                <span id="btn-submit-text">Lưu công việc</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- SCRIPT ES6 MODULES -->
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/task-form.js"></script>
+  <script type="module" src="js/theme.js"></script>
+</body>
+</html>

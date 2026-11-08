@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thông tin tài khoản - TaskMaster</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="auth-pending">
+  <div class="app-container">
+    <aside class="sidebar">
+      <a href="index.html" class="sidebar-brand"><div class="brand-icon">TM</div><div class="brand-text">Task<span>Master</span></div></a>
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-link"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1-1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          Dashboard Thống Kê
+        </a>
+        <a href="tasks.html" class="nav-link"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+          Danh sách công việc
+        </a>
+        <a href="task-form.html" class="nav-link"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          Thêm mới công việc
+        </a>
+        <a href="categories.html" class="nav-link"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+          Quản lý danh mục
+        </a>
+      </nav>
+      <div class="sidebar-footer"><div class="author-card"><div class="avatar"></div><div class="author-info"><h4></h4><p></p></div></div></div>
+    </aside>
+    <main class="main-wrapper">
+      <header class="top-navbar"><div class="navbar-left"><button class="mobile-menu-btn" aria-label="M&#7903; menu" aria-expanded="false"><svg class="menu-open-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg><svg class="menu-close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"/></svg></button><h1 class="page-title">Th&#244;ng tin t&#224;i kho&#7843;n</h1></div></header>
+      <div class="page-body account-page">
+        <section class="account-profile-hero">
+          <div class="account-profile-avatar-wrap">
+            <div class="account-profile-avatar" id="profile-avatar" aria-label="&#7842;nh &#273;&#7841;i di&#7879;n">--</div>
+            <label for="profile-photo-input" class="btn btn-secondary btn-sm account-photo-button">T&#7843;i &#7843;nh &#273;&#7841;i di&#7879;n</label>
+            <input id="profile-photo-input" class="account-photo-input" type="file" accept="image/png,image/jpeg,image/webp,image/gif" aria-describedby="profile-photo-help profile-photo-error">
+            <button type="button" id="remove-profile-photo" class="account-photo-remove" hidden>G&#7905; &#7843;nh</button>
+            <small id="profile-photo-help" class="account-photo-help">PNG, JPG, WebP ho&#7863;c GIF; t&#7889;i &#273;a 5 MB</small>
+            <span id="profile-photo-error" class="account-photo-error" role="alert" hidden></span>
+          </div>
+          <div class="account-profile-copy"><p class="eyebrow">T&#192;I KHO&#7842;N C&#7910;A T&#212;I</p><h2 id="profile-name">&#272;ang t&#7843;i...</h2><p id="profile-role"></p><span class="account-profile-caption">Qu&#7843;n l&#253; th&#244;ng tin v&#224; b&#7843;o m&#7853;t t&#224;i kho&#7843;n c&#7911;a b&#7841;n</span></div>
+        </section>
+        <div class="account-settings-grid">
+        <section class="card account-details-card">
+          <div class="account-details-heading">
+            <div><p class="eyebrow">TH&#212;NG TIN C&#193; NH&#194;N</p><h2>Chi ti&#7871;t t&#224;i kho&#7843;n</h2></div>
+            <div class="account-details-actions"><span class="account-status" id="profile-status"></span><button type="button" class="btn btn-secondary btn-sm" id="edit-profile-button">Ch&#7881;nh s&#7917;a</button></div>
+          </div>
+          <dl class="account-details-grid">
+            <div><dt>H&#7885; v&#224; t&#234;n</dt><dd id="profile-detail-name">&#8212;</dd></div>
+            <div><dt>T&#234;n &#273;&#259;ng nh&#7853;p</dt><dd id="profile-username">&#8212;</dd></div>
+            <div><dt>Email</dt><dd id="profile-email">&#8212;</dd></div>
+            <div><dt>S&#7889; &#273;i&#7879;n tho&#7841;i</dt><dd id="profile-phone">&#8212;</dd></div>
+            <div><dt>Vai tr&#242;</dt><dd id="profile-role-detail">&#8212;</dd></div>
+            <div id="profile-user-code-row"><dt>M&#227; s&#7889; ng&#432;&#7901;i d&#249;ng</dt><dd id="profile-id">&#8212;</dd></div>
+            <div><dt>Ng&#224;y sinh</dt><dd id="profile-birth-date">&#8212;</dd></div>
+            <div><dt>S&#7903; th&#237;ch</dt><dd id="profile-hobbies" class="account-hobbies-value">&#8212;</dd></div>
+          </dl>
+          <form id="profile-edit-form" class="account-edit-form" hidden>
+            <label class="form-group"><span class="form-label">T&#234;n hi&#7875;n th&#7883;</span><input id="profile-edit-name" class="form-control" type="text" maxlength="80" required></label>
+            <label class="form-group"><span class="form-label">Email (d&#249;ng &#273;&#7875; &#273;&#259;ng nh&#7853;p v&#224; kh&#244;i ph&#7909;c m&#7853;t kh&#7849;u)</span><input id="profile-edit-email" class="form-control" type="email" autocomplete="email" maxlength="254" required></label>
+            <label class="form-group"><span class="form-label">M&#7853;t kh&#7849;u hi&#7879;n t&#7841;i (ch&#7881; c&#7847;n khi &#273;&#7893;i email)</span><input id="profile-edit-current-password" class="form-control" type="password" autocomplete="current-password"></label>
+            <label class="form-group"><span class="form-label">S&#7889; &#273;i&#7879;n tho&#7841;i</span><input id="profile-edit-phone" class="form-control" type="tel" autocomplete="tel" maxlength="20"></label>
+            <label class="form-group"><span class="form-label">Ng&#224;y sinh</span><input id="profile-edit-birth-date" class="form-control" type="date"></label>
+            <label class="form-group"><span class="form-label">S&#7903; th&#237;ch</span><textarea id="profile-edit-hobbies" class="form-control" rows="3" maxlength="500" placeholder="Nh&#7853;p c&#225;c s&#7903; th&#237;ch c&#7911;a b&#7841;n"></textarea></label>
+            <p class="account-role-locked">Vai tr&#242; t&#224;i kho&#7843;n kh&#244;ng th&#7875; thay &#273;&#7893;i t&#7841;i &#273;&#226;y.</p>
+            <div class="account-edit-actions"><button type="submit" class="btn btn-primary">L&#432;u thay &#273;&#7893;i</button><button type="button" class="btn btn-secondary" id="cancel-profile-edit">H&#7911;y</button></div>
+          </form>
+          <p id="email-verification-status" role="status"></p>
+          <button type="button" id="verify-email-button" class="btn btn-secondary btn-sm">G&#7917;i email x&#225;c minh</button>
+        </section>
+        <section class="card account-password-card">
+          <div class="account-password-heading"><span class="account-password-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3M12 14v3"/></svg></span><div><p class="eyebrow">B&#7842;O M&#7852;T</p><h2>&#272;&#7893;i m&#7853;t kh&#7849;u</h2><p>C&#7853;p nh&#7853;t m&#7853;t kh&#7849;u &#273;&#7875; b&#7843;o v&#7879; t&#224;i kho&#7843;n.</p></div></div>
+          <form id="password-change-form" class="account-edit-form account-password-form">
+            <label class="form-group"><span class="form-label">M&#7853;t kh&#7849;u hi&#7879;n t&#7841;i</span><input class="form-control" name="currentPassword" type="password" autocomplete="current-password" required></label>
+            <label class="form-group"><span class="form-label">M&#7853;t kh&#7849;u m&#7899;i (t&#7889;i thi&#7875;u 10 k&#253; t&#7921;)</span><input class="form-control" name="newPassword" type="password" minlength="10" maxlength="128" autocomplete="new-password" required></label>
+            <label class="form-group"><span class="form-label">Nh&#7853;p l&#7841;i m&#7853;t kh&#7849;u m&#7899;i</span><input class="form-control" name="confirmPassword" type="password" minlength="10" maxlength="128" autocomplete="new-password" required></label>
+            <p id="password-change-message" role="status"></p>
+            <button class="btn btn-primary" type="submit">C&#7853;p nh&#7853;t m&#7853;t kh&#7849;u</button>
+          </form>
+        </section>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div class="avatar-crop-modal" id="avatar-crop-modal" hidden>
+    <section class="avatar-crop-dialog" role="dialog" aria-modal="true" aria-labelledby="avatar-crop-title">
+      <button type="button" id="avatar-crop-close" class="avatar-crop-close" aria-label="&#272;&#243;ng">&times;</button>
+      <p class="eyebrow">&#7842;NH &#272;&#7840;I DI&#7878;N</p>
+      <h2 id="avatar-crop-title">C&#7855;t v&#224; c&#259;n ch&#7881;nh &#7843;nh</h2>
+      <p class="avatar-crop-description">K&#233;o &#7843;nh trong khung tr&#242;n, d&#249;ng thanh tr&#432;&#7907;t &#273;&#7875; ph&#243;ng to. GIF v&#7851;n gi&#7919; chuy&#7875;n &#273;&#7897;ng.</p>
+      <div class="avatar-crop-viewport" id="avatar-crop-viewport"><img id="avatar-crop-image" alt="Xem tr&#432;&#7899;c &#7843;nh &#273;&#7841;i di&#7879;n"></div>
+      <label class="avatar-crop-zoom" for="avatar-crop-zoom"><span>Thu ph&#243;ng</span><input id="avatar-crop-zoom" type="range" min="1" max="3" step="0.01" value="1"><output id="avatar-crop-zoom-value">100%</output></label>
+      <div class="avatar-crop-actions"><button type="button" id="avatar-crop-cancel" class="btn btn-secondary">H&#7911;y</button><button type="button" id="avatar-crop-save" class="btn btn-primary">L&#432;u &#7843;nh</button></div>
+    </section>
+  </div>
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/account.js"></script>
+  <script type="module" src="js/theme.js"></script>
+</body>
+</html>

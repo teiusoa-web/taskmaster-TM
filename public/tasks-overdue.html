@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danh Sách Công Việc - TaskMaster</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="auth-pending" data-task-view="overdue">
+  <div class="app-container">
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="sidebar">
+      <a href="index.html" class="sidebar-brand" aria-label="TaskMaster home"><div class="brand-icon">✓</div>
+        <div class="brand-text">Task<span>Master</span></div></a>
+
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          Dashboard Thống Kê
+        </a>
+        <a href="tasks.html" class="nav-link active">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+          Danh sách công việc
+        </a>
+        <a href="task-form.html" class="nav-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          Thêm mới công việc
+        </a>
+        <a href="categories.html" class="nav-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+          Quản lý danh mục
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="author-card">
+          <div class="avatar"></div>
+          <div class="author-info">
+            <h4></h4>
+            <p></p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-wrapper">
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button class="mobile-menu-btn" aria-label="Mở menu" aria-expanded="false"><svg class="menu-open-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg><svg class="menu-close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"/></svg></button>
+          <h1 class="page-title">C&#244;ng vi&#7879;c qu&#225; h&#7841;n</h1>
+        </div>
+        <div class="navbar-right">
+          <a href="task-form.html" class="btn-quick-add">
+            <span>+ Tạo việc mới</span>
+          </a>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- BỘ LỌC, TÌM KIẾM, SẮP XẾP (Đạt tiêu chí mục 9) -->
+        <section class="filter-bar">
+          <div class="search-box">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input type="text" id="search-task" placeholder="Tìm kiếm theo tên công việc, từ khóa..." />
+          </div>
+
+          <select id="filter-status" class="filter-select">
+            <option value="all">Tất cả trạng thái</option>
+            <option value="pending">Chờ xử lý</option>
+            <option value="in-progress">Đang làm</option>
+            <option value="awaiting-review">Chờ admin duyệt</option>
+            <option value="needs-revision">Cần làm lại</option>
+            <option value="completed">Đã hoàn thành</option>
+            <option value="cancelled">Đã hủy</option>
+          </select>
+
+          <select id="filter-category" class="filter-select">
+            <option value="all">Tất cả danh mục</option>
+          </select>
+
+          <select id="filter-priority" class="filter-select">
+            <option value="all">Tất cả mức ưu tiên</option>
+            <option value="high">Ưu tiên: Cao</option>
+            <option value="medium">Ưu tiên: Trung bình</option>
+            <option value="low">Ưu tiên: Thấp</option>
+          </select>
+
+          <select id="filter-assignee" class="filter-select" hidden aria-label="Lọc theo tài khoản người dùng">
+            <option value="all">Tất cả người dùng</option>
+          </select>
+
+          <select id="sort-by" class="filter-select">
+            <option value="deadline-asc">Hạn chót: Gần nhất trước</option>
+            <option value="deadline-desc">Hạn chót: Xa nhất trước</option>
+            <option value="priority-desc">Mức độ ưu tiên cao nhất</option>
+            <option value="title-az">Tên công việc (A → Z)</option>
+            <option value="title-za">Tên công việc (Z → A)</option>
+          </select>
+        </section>
+
+        <!-- BẢNG DANH SÁCH -->
+        <section class="card" style="padding: 0; overflow: hidden;">
+          <div style="padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color);">
+            <h2 style="font-size: 1rem; font-weight: 700;">Danh Sách Hiển Thị</h2>
+            <span class="badge" id="task-count-badge" style="background: #e2e8f0; color: #475569;">0 công việc</span>
+          </div>
+
+          <div class="table-responsive" style="border: none; border-radius: 0;">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Tên công việc</th>
+                  <th>Danh mục</th>
+                  <th>Ng&#432;&#7901;i nh&#7853;n</th>
+                  <th>Mức ưu tiên</th>
+                  <th>Hạn chót</th>
+                  <th>Trạng thái</th>
+                  <th style="width: 120px;">Hành động</th>
+                </tr>
+              </thead>
+              <tbody id="task-table-body">
+                <!-- Render động bởi tasks.js -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- SCRIPT ES6 MODULES -->
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/tasks.js"></script>
+  <script type="module" src="js/theme.js"></script>
+</body>
+</html>
