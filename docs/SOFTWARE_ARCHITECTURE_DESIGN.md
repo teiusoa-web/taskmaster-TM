@@ -20,7 +20,7 @@ flowchart LR
     Browser --> Cache[(Browser localStorage cache)]
 ```
 
-`npm run dev` starts the development web server, JSON Server, and upload service. The web server serves the static app and delegates `/auth/*` routes to the auth handler. `public/js/api-config.js` supplies API base URLs. `public/js/storage.js` reads and writes tasks and categories through JSON Server, with a localStorage fallback for reading when the API is unavailable.
+`npm run dev` starts the web server, JSON Server, and upload service. The web server serves the static app, delegates `/auth/*` routes to the auth handler, and proxies task/category/upload routes to the internal services. `public/js/api-config.js` uses the current web origin, so the browser only needs one public service URL. `public/js/storage.js` reads and writes tasks and categories through JSON Server, with a localStorage fallback for reading when the API is unavailable.
 
 ## 3. Application components
 

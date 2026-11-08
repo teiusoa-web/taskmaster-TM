@@ -84,6 +84,23 @@ async function migrateUsers() {
     delete user.password;
   }
 
+  const adminUsername = process.env.ADMIN_USERNAME;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (users.length === 0 && (adminUsername || adminPassword)) {
+    if (!usernameValid(adminUsername) || !passwordValid(adminPassword)) {
+      throw new Error('Set a valid ADMIN_USERNAME (3-40 characters) and ADMIN_PASSWORD (10-128 bytes) to bootstrap the first admin.');
+    }
+    users.push({
+      id: 'user_admin',
+      name: process.env.ADMIN_NAME || 'Administrator',
+      username: adminUsername,
+      email: process.env.ADMIN_EMAIL || '',
+      role: 'admin',
+      active: true,
+      passwordHash: hashPassword(adminPassword)
+    });
+  }
+
   if (Array.isArray(db.users)) {
     const existingIds = new Set(users.map(user => user.id));
     for (const legacy of db.users) {

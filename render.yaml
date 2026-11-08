@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: taskmaster-task-manager
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm run dev
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false

@@ -5,7 +5,7 @@ const net = require('node:net');
 const path = require('node:path');
 const { migrateUsers, createAuthHandler } = require('./auth-server.cjs');
 
-const preferredAppPort = Number(process.env.APP_PORT) || 3000;
+const preferredAppPort = Number(process.env.PORT || process.env.APP_PORT) || 3000;
 const preferredApiPort = Number(process.env.API_PORT) || 3001;
 const preferredUploadPort = Number(process.env.UPLOAD_PORT) || 3002;
 const mimeTypes = {
@@ -108,15 +108,27 @@ async function ensureService(startPort, check, command, args, extraEnv = {}) {
   throw new Error(`Could not start TaskMaster service near port ${startPort}.`);
 }
 
-function serveStatic(port) {
+function serveStatic(port, apiPort, uploadPort) {
   const projectRoot = process.cwd();
   const root = path.join(projectRoot, 'public');
-  const handleAuth = createAuthHandler({ appUrl: process.env.APP_URL || `http://localhost:${port}` });
+  const handleAuth = createAuthHandler({ appUrl: process.env.APP_URL || process.env.RENDER_EXTERNAL_URL || `http://localhost:${port}` });
   const server = http.createServer((req, res) => {
     let pathname;
     try { pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname); }
     catch { res.writeHead(400).end('Bad request'); return; }
     if (pathname.startsWith('/auth/')) { handleAuth(req, res, pathname); return; }
+    const proxyPort = pathname === '/upload' || pathname === '/health' ? uploadPort
+      : pathname === '/tasks' || pathname.startsWith('/tasks/') || pathname === '/categories' || pathname.startsWith('/categories/') ? apiPort
+        : null;
+    if (proxyPort) {
+      const proxy = http.request({ hostname: '127.0.0.1', port: proxyPort, path: req.url, method: req.method, headers: { ...req.headers, host: `127.0.0.1:${proxyPort}` } }, upstream => {
+        res.writeHead(upstream.statusCode || 502, upstream.headers);
+        upstream.pipe(res);
+      });
+      proxy.once('error', error => { if (!res.headersSent) res.writeHead(502, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: error.message })); });
+      req.pipe(proxy);
+      return;
+    }
     if (pathname.toLowerCase() === '/.env' || pathname.toLowerCase().startsWith('/.env/')) { res.writeHead(404).end('Not found'); return; }
     if (pathname.toLowerCase().startsWith('/data/') && !pathname.toLowerCase().startsWith('/data/uploads/')) { res.writeHead(404).end('Not found'); return; }
     if (pathname === '/') pathname = '/index.html';
@@ -158,12 +170,10 @@ async function start() {
     port => ({ UPLOAD_PORT: String(port) })
   );
 
-  const configPath = path.join(process.cwd(), 'public', 'js', 'api-config.js');
-  fs.writeFileSync(configPath, `export const API_BASE = 'http://localhost:${apiPort}';\nexport const UPLOAD_BASE = 'http://localhost:${uploadPort}';\n`);
   let appPort = preferredAppPort;
   for (let attempt = 0; attempt < 10; attempt += 1) {
     if (!(await canBind(appPort))) appPort = await availablePort(appPort + 1);
-    try { await serveStatic(appPort); return; }
+    try { await serveStatic(appPort, apiPort, uploadPort); return; }
     catch (error) {
       if (error.code !== 'EADDRINUSE') throw error;
       appPort = await availablePort(appPort + 1);

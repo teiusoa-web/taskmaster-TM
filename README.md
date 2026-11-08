@@ -1,4 +1,4 @@
-# TaskMaster
+﻿# TaskMaster
 
 TaskMaster is a role based task management web app. Admins and managers create and assign work; users track assigned tasks, update checklists, discuss progress, and submit completion reports for review.
 
@@ -56,6 +56,16 @@ docs/             Architecture, workflow, data, and API documentation
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidance.
 
+## Free demo deployment on Render
+
+1. Push this repository to GitHub.
+2. In Render, create a **Blueprint** and select the GitHub repository. Render reads [`render.yaml`](render.yaml).
+3. When prompted, set `ADMIN_USERNAME` (3 to 40 letters, numbers, `_`, `.`, or `-`) and `ADMIN_PASSWORD` (10 to 128 bytes). These values create the first admin account; do not commit them.
+4. Deploy, wait for the build to finish, then open the `onrender.com` URL shown in Render.
+
+This configuration is for a public demo. Render Free services sleep after 15 minutes without traffic and have ephemeral storage, so accounts, tasks, and uploaded files can disappear after a restart or sleep. The app's generic task API and upload endpoint also lack server-side user authorization. Avoid real or sensitive data; use a persistent database and authenticated backend before using it for real work.
+
 ## Deployment note
 
 Task and category access rules currently run in browser code while JSON Server exposes generic CRUD routes. The upload service also does not require an authenticated session. Put data access and authorization behind a trusted backend before exposing the app to untrusted users or the public internet.
+
