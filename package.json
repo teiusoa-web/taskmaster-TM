@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-  "start": "node scripts/start-dev.cjs",
-  "dev": "..."
-}
+    "start": "node scripts/start-dev.cjs",
     "api": "node scripts/auth-server.cjs --migrate && json-server data/database.json --static public",
     "dev": "node scripts/start-dev.cjs"
   },
