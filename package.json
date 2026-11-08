@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node scripts/start-dev.cjs",
-    "api": "node scripts/auth-server.cjs --migrate && json-server data/database.json --static public",
-    "dev": "node scripts/start-dev.cjs"
-  },
+  "start": "node scripts/auth-server.cjs",
+  "dev": "node scripts/start-dev.cjs",
+  "api": "node scripts/auth-server.cjs --migrate && json-server data/database.json --static public"
+},
   "devDependencies": {
     "json-server": "^1.0.0-beta.15"
   },
