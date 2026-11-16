@@ -160,7 +160,7 @@ async function start() {
     preferredApiPort,
     servesApi,
     () => process.execPath,
-    port => [require.resolve('json-server/lib/bin.js'), path.join(process.cwd(), 'data', 'database.json'), '--port', String(port)],
+    port => [require.resolve('json-server/lib/bin.js'), path.join(process.cwd(), 'data', 'database.json'), '--port', String(port), '--host', '127.0.0.1'],
     () => ({}),
     process.cwd()
   );
