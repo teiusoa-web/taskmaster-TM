@@ -149,9 +149,6 @@ export const renderAvatarStackHtml = (task, users = [], { compact = false } = {}
     }</span>`;
   }).join('');
 
-  const teamBadge = members.length > 1
-    ? `<span class="team-count-pill" data-tooltip="${escapeAttrAndText(members.map(m => m.name || m.username).join(', '))}">Nhóm ${members.length}</span>`
-    : '';
   const assigneeIdsAttr = escapeAttrAndText(members.map(m => m.id).join(','));
   const taskIdAttr = escapeAttrAndText(task?.id || '');
   const taskTitleAttr = escapeAttrAndText(task?.title || '');
@@ -159,6 +156,6 @@ export const renderAvatarStackHtml = (task, users = [], { compact = false } = {}
     ? 'Nhấn để xem danh sách người thực hiện'
     : 'Nhấn để xem thông tin chi tiết';
 
-  return `<span class="task-assignee is-interactive" role="button" tabindex="0" aria-label="${triggerHint}" data-assignee-ids="${assigneeIdsAttr}" data-task-id="${taskIdAttr}" data-task-title="${taskTitleAttr}"><span class="avatar-stack">${avatarsHtml}</span>${teamBadge}</span>`;
+  return `<span class="task-assignee is-interactive" role="button" tabindex="0" aria-label="${triggerHint}" data-assignee-ids="${assigneeIdsAttr}" data-task-id="${taskIdAttr}" data-task-title="${taskTitleAttr}"><span class="avatar-stack">${avatarsHtml}</span></span>`;
 };
 
