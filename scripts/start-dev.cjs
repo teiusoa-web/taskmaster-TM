@@ -143,8 +143,9 @@ function serveStatic(port, apiPort, uploadPort) {
     });
   });
   return new Promise((resolve, reject) => {
+    const host = process.env.HOST || '0.0.0.0';
     server.once('error', reject);
-    server.listen(port, () => {
+    server.listen(port, host, () => {
       server.removeListener('error', reject);
       server.on('error', error => console.error('TaskMaster web server error:', error.message));
       console.log(`TaskMaster: http://localhost:${port}/`);
