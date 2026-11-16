@@ -9,6 +9,8 @@ services:
     envVars:
       - key: NODE_VERSION
         value: "22"
+      - key: APP_URL
+        sync: false
       - key: ADMIN_USERNAME
         sync: false
       - key: ADMIN_PASSWORD

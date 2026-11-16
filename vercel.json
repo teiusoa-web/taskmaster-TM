@@ -1,0 +1,40 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "",
+  "outputDirectory": "public",
+  "rewrites": [
+    {
+      "source": "/auth/:path*",
+      "destination": "https://taskmaster-task-manager.onrender.com/auth/:path*"
+    },
+    {
+      "source": "/tasks",
+      "destination": "https://taskmaster-task-manager.onrender.com/tasks"
+    },
+    {
+      "source": "/tasks/:path*",
+      "destination": "https://taskmaster-task-manager.onrender.com/tasks/:path*"
+    },
+    {
+      "source": "/categories",
+      "destination": "https://taskmaster-task-manager.onrender.com/categories"
+    },
+    {
+      "source": "/categories/:path*",
+      "destination": "https://taskmaster-task-manager.onrender.com/categories/:path*"
+    },
+    {
+      "source": "/upload",
+      "destination": "https://taskmaster-task-manager.onrender.com/upload"
+    },
+    {
+      "source": "/health",
+      "destination": "https://taskmaster-task-manager.onrender.com/health"
+    },
+    {
+      "source": "/data/uploads/:path*",
+      "destination": "https://taskmaster-task-manager.onrender.com/data/uploads/:path*"
+    }
+  ]
+}
