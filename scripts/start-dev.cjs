@@ -71,7 +71,7 @@ function monitor(child) {
 
 const delay = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
 
-async function waitForService(check, child = null, attempts = 35) {
+async function waitForService(check, child = null, attempts = 150) {
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     if (await check()) return true;
     if (child && (child.exitCode !== null || child.signalCode !== null)) return false;
