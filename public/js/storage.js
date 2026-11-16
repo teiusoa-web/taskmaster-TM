@@ -1,6 +1,6 @@
 
 import { Auth } from './auth.js';
-import { API_BASE } from './api-config.js';
+import { API_BASE, DEFAULT_API_TIMEOUT_MS, fetchWithRetry } from './api-config.js';
 
 const TASKS_KEY = 'DACK_TASKS_LIST';
 const CATEGORIES_KEY = 'DACK_CATEGORIES_LIST';
@@ -11,10 +11,14 @@ let initPromise = null;
 let apiAvailable = false;
 
 async function request(path, options = {}) {
-    const response = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers: { 'Content-Type': 'application/json', ...options.headers }
-  });
+  const response = await fetchWithRetry(
+    `${API_BASE}${path}`,
+    {
+      ...options,
+      headers: { 'Content-Type': 'application/json', ...options.headers }
+    },
+    { timeoutMs: DEFAULT_API_TIMEOUT_MS, retries: 2 }
+  );
   if (!response.ok) throw new Error(`API request failed (${response.status})`);
   if (response.status === 204) return null;
   return response.json();

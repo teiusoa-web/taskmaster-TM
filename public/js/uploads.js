@@ -1,4 +1,4 @@
-import { UPLOAD_BASE } from './api-config.js';
+import { UPLOAD_BASE, fetchWithRetry } from './api-config.js';
 import { Auth } from './auth.js';
 
 export async function uploadImage(file, kind = 'attachment') {
@@ -8,11 +8,15 @@ export async function uploadImage(file, kind = 'attachment') {
     reader.onerror = () => reject(reader.error || new Error('Could not read image file.'));
     reader.readAsDataURL(file);
   });
-  const response = await fetch(`${UPLOAD_BASE}/upload`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: file.name, type: file.type, kind, data: String(dataUrl).split(',')[1] })
-  });
+  const response = await fetchWithRetry(
+    `${UPLOAD_BASE}/upload`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: file.name, type: file.type, kind, data: String(dataUrl).split(',')[1] })
+    },
+    { timeoutMs: 90000, retries: 1 }
+  );
   const result = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(result.error || 'Could not upload image.');
   return result;

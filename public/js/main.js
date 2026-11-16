@@ -1,4 +1,5 @@
 import { Auth } from './auth.js';
+import { startKeepAlivePing } from './api-config.js';
 import { applyAvatarCrop } from './uploads.js';
 import { Notifications } from './notifications.js';
 import { Storage } from './storage.js';
@@ -137,6 +138,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!currentUser && currentPage !== 'login.html') { window.location.replace('login.html'); return; }
   if (currentUser && currentPage === 'login.html') { window.location.replace('index.html'); return; }
   if (!currentUser) return;
+  startKeepAlivePing();
   setupGlobalTopbar();
   Notifications.initUI();
   setupUserProfileViewer();

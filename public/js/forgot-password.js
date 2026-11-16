@@ -1,4 +1,7 @@
 import { Auth } from './auth.js';
+import { warmUpBackend } from './api-config.js';
+
+warmUpBackend();
 
 const forgotForm = document.getElementById('forgot-password-form');
 const emailInput = document.getElementById('email');

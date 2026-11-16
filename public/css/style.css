@@ -6370,6 +6370,26 @@ body.auth-page.auth-split-page {
   font-size: 0.82rem;
 }
 
+.login-retry-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #fed7aa;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 0.8rem;
+}
+
+:root[data-theme="dark"] .login-retry-box {
+  border-color: rgba(251, 146, 60, 0.35);
+  background: rgba(251, 146, 60, 0.12);
+  color: #fed7aa;
+}
+
 .auth-split-page .auth-submit {
   width: 100%;
   min-height: 45px;

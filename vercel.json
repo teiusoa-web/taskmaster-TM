@@ -5,6 +5,10 @@
   "outputDirectory": "public",
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://taskmaster-task-manager.onrender.com/:path*"
+    },
+    {
       "source": "/auth/:path*",
       "destination": "https://taskmaster-task-manager.onrender.com/auth/:path*"
     },

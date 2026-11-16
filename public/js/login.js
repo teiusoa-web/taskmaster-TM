@@ -1,7 +1,8 @@
 import { Auth } from './auth.js';
+import { warmUpBackend } from './api-config.js';
 
 // Đánh thức backend Render sớm trong nền ngay khi mở trang đăng nhập
-fetch('/health', { cache: 'no-store' }).catch(() => {});
+warmUpBackend();
 
 await Auth.loadUsers();
 if (Auth.getCurrentUser()) window.location.replace('index.html');
@@ -23,20 +24,48 @@ if (togglePasswordBtn && passwordInput) {
   });
 }
 
-document.getElementById('login-form').addEventListener('submit', async event => {
-  event.preventDefault();
-  const data = new FormData(event.currentTarget);
-  const button = document.getElementById('login-submit-btn') || event.currentTarget.querySelector('[type="submit"]');
+const loginForm = document.getElementById('login-form');
+const retryBox = document.getElementById('login-retry-box');
+const retryBtn = document.getElementById('login-retry-btn');
+
+async function submitLogin() {
+  const data = new FormData(loginForm);
+  const button = document.getElementById('login-submit-btn') || loginForm.querySelector('[type="submit"]');
   const label = document.getElementById('login-submit-label');
   button.disabled = true;
   if (label) label.textContent = 'Đang đăng nhập...';
   errorEl.textContent = '';
+  if (retryBox) retryBox.hidden = true;
 
-  if (await Auth.login(data.get('username'), data.get('password'))) {
-    window.location.href = 'index.html';
-  } else {
-    errorEl.textContent = Auth.lastError || 'Tên đăng nhập hoặc mật khẩu không đúng, hoặc tài khoản đã bị khóa.';
+  const coldStartNoticeId = window.setTimeout(() => {
+    if (button.disabled && label) {
+      label.textContent = 'Đang đánh thức máy chủ...';
+    }
+  }, 4000);
+
+  try {
+    if (await Auth.login(data.get('username'), data.get('password'))) {
+      window.location.href = 'index.html';
+      return;
+    }
+    const errText = Auth.lastError || 'Tên đăng nhập hoặc mật khẩu không đúng, hoặc tài khoản đã bị khóa.';
+    errorEl.textContent = errText;
+    if (retryBox && /khởi động|phản hồi chậm|Cold Start/i.test(errText)) {
+      retryBox.hidden = false;
+    }
+  } finally {
+    window.clearTimeout(coldStartNoticeId);
     button.disabled = false;
     if (label) label.textContent = 'Đăng nhập';
   }
+}
+
+loginForm.addEventListener('submit', event => {
+  event.preventDefault();
+  submitLogin();
+});
+
+retryBtn?.addEventListener('click', () => {
+  warmUpBackend();
+  submitLogin();
 });

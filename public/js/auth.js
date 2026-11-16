@@ -1,30 +1,26 @@
+import { DEFAULT_API_TIMEOUT_MS, fetchWithRetry } from './api-config.js';
+
 const USERS_KEY = 'DACK_USERS';
 let usersCache = [];
 let currentUser = null;
 let usersLoadPromise = null;
 
 async function authRequest(path, options = {}) {
-  const controller = new AbortController();
-  const timeoutMs = Number(options.timeoutMs) || 45000;
-  const timeoutId = setTimeout(() => controller.abort('REQUEST_TIMEOUT'), timeoutMs);
-  try {
-    const response = await fetch(path, {
+  const response = await fetchWithRetry(
+    path,
+    {
       ...options,
-      signal: options.signal || controller.signal,
       credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json', ...options.headers }
-    });
-    const payload = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(payload.error || `Authentication request failed (${response.status}).`);
-    return payload;
-  } catch (error) {
-    if (error === 'REQUEST_TIMEOUT' || error?.name === 'AbortError' || controller.signal.aborted) {
-      throw new Error('Máy chủ đang khởi động hoặc phản hồi chậm. Vui lòng thử lại sau vài giây.');
+    },
+    {
+      timeoutMs: Number(options.timeoutMs) || DEFAULT_API_TIMEOUT_MS,
+      retries: Number.isInteger(options.retries) ? options.retries : 2
     }
-    throw error;
-  } finally {
-    clearTimeout(timeoutId);
-  }
+  );
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(payload.error || `Authentication request failed (${response.status}).`);
+  return payload;
 }
 
 function clearClientCredentials() {
