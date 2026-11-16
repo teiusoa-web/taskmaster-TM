@@ -162,7 +162,7 @@ async function start() {
     () => process.execPath,
     port => [require.resolve('json-server/lib/bin.js'), path.join(process.cwd(), 'data', 'database.json'), '--port', String(port)],
     () => ({}),
-    path.join(process.cwd(), 'data')
+    process.cwd()
   );
   const uploadPort = await ensureService(
     preferredUploadPort,
