@@ -156,13 +156,14 @@ function serveStatic(port, apiPort, uploadPort) {
 
 async function start() {
   await migrateUsers();
+  fs.mkdirSync(path.join(process.cwd(), 'data', 'public'), { recursive: true });
   const apiPort = await ensureService(
     preferredApiPort,
     servesApi,
     () => process.execPath,
     port => [require.resolve('json-server/lib/bin.js'), path.join(process.cwd(), 'data', 'database.json'), '--port', String(port), '--host', '127.0.0.1'],
     () => ({}),
-    process.cwd()
+    path.join(process.cwd(), 'data')
   );
   const uploadPort = await ensureService(
     preferredUploadPort,
