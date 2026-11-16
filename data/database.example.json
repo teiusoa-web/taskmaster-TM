@@ -1,4 +1,660 @@
 {
-  "categories": [],
-  "tasks": []
+  "categories": [
+    {
+      "id": "cat_design",
+      "name": "Thiết kế giao diện",
+      "color": "#6366f1"
+    },
+    {
+      "id": "cat_testing",
+      "name": "Kiểm thử",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "cat_docs",
+      "name": "Tài liệu",
+      "color": "#14b8a6"
+    },
+    {
+      "id": "cat_content",
+      "name": "Nội dung",
+      "color": "#ec4899"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task_demo_01",
+      "title": "Nâng cấp giao diện trang tổng quan (Dashboard)",
+      "categoryId": "cat_design",
+      "categoryName": "Thiết kế giao diện",
+      "priority": "high",
+      "deadline": "2026-11-18",
+      "deadlineTime": "17:00",
+      "description": "Hoàn thiện thẻ KPI, thanh sức khỏe tiến độ đa phân đoạn và khả năng hiển thị đồng bộ trên desktop và mobile.",
+      "ownerId": "user_manager",
+      "assigneeId": "user_member",
+      "assigneeIds": [
+        "user_member",
+        "user_member2",
+        "user_manager"
+      ],
+      "status": "in-progress",
+      "createdAt": "2026-11-12",
+      "acceptedAt": "2026-11-13T08:30:00.000Z",
+      "attachments": [
+        {
+          "id": "att_demo_01_1",
+          "name": "Figma - TaskMaster Dashboard Spec",
+          "url": "https://www.figma.com/",
+          "type": "link"
+        }
+      ],
+      "subtasks": [
+        {
+          "id": "sub_demo_01_1",
+          "text": "Rà soát yêu cầu bố cục Dashboard mới",
+          "done": true,
+          "comments": [
+            {
+              "id": "submsg_01_1",
+              "userId": "user_member",
+              "username": "user",
+              "name": "Người dùng",
+              "text": "Đã chốt bố cục 7 thẻ KPI và thanh sức khỏe tiến độ với Quản lý.",
+              "attachments": [],
+              "createdAt": "2026-11-13T09:15:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "sub_demo_01_2",
+          "text": "Triển khai thanh sức khỏe tiến độ công việc",
+          "done": true,
+          "comments": [
+            {
+              "id": "submsg_01_2",
+              "userId": "user_member2",
+              "username": "user2",
+              "name": "Người dùng 2",
+              "text": "Đã hoàn thiện thanh tiến độ đa phân đoạn và tooltip theo từng trạng thái.",
+              "attachments": [],
+              "createdAt": "2026-11-14T15:20:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "sub_demo_01_3",
+          "text": "Kiểm tra hiển thị Light Mode và Dark Mode",
+          "done": false,
+          "comments": [
+            {
+              "id": "submsg_01_3",
+              "userId": "user_manager",
+              "username": "manager",
+              "name": "Quản lý",
+              "text": "Nhờ nhóm kiểm tra kỹ độ tương phản chữ ở Dark Mode trước 17:00 nhé.",
+              "attachments": [],
+              "createdAt": "2026-11-15T10:00:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "sub_demo_01_4",
+          "text": "Báo cáo quản lý và gửi duyệt hoàn thành",
+          "done": false,
+          "comments": []
+        }
+      ],
+      "reports": [],
+      "comments": [
+        {
+          "id": "comment_demo_01_2",
+          "text": "Đã kiểm tra phần KPI trên mobile, màu sắc Dark Mode hiển thị rõ nét.",
+          "userId": "user_manager",
+          "username": "manager",
+          "name": "Quản lý",
+          "replyTo": {
+            "id": "comment_demo_01_1",
+            "userId": "user_member",
+            "name": "Người dùng",
+            "text": "Nhóm đã hoàn thành xong 2/4 bước đầu, đang hoàn thiện kiểm tra giao diện Dark Mode."
+          },
+          "createdAt": "2026-11-16T08:45:00.000Z"
+        },
+        {
+          "id": "comment_demo_01_1",
+          "text": "Nhóm đã hoàn thành xong 2/4 bước đầu, đang hoàn thiện kiểm tra giao diện Dark Mode.",
+          "userId": "user_member",
+          "username": "user",
+          "name": "Người dùng",
+          "createdAt": "2026-11-15T14:20:00.000Z"
+        }
+      ],
+      "activity": [
+        {
+          "id": "act_demo_01_3",
+          "type": "comment",
+          "text": "Đã phản hồi Người dùng",
+          "userId": "user_manager",
+          "userName": "Quản lý",
+          "createdAt": "2026-11-16T08:45:00.000Z"
+        },
+        {
+          "id": "act_demo_01_2",
+          "type": "accepted",
+          "text": "Đã nhận công việc",
+          "userId": "user_member",
+          "userName": "Người dùng",
+          "createdAt": "2026-11-13T08:30:00.000Z"
+        },
+        {
+          "id": "act_demo_01_1",
+          "type": "created",
+          "text": "Đã tạo công việc",
+          "userId": "user_manager",
+          "userName": "Quản lý",
+          "createdAt": "2026-11-12T09:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "task_demo_02",
+      "title": "Kiểm thử phân quyền 3 vai trò và luồng duyệt việc",
+      "categoryId": "cat_testing",
+      "categoryName": "Kiểm thử",
+      "priority": "high",
+      "deadline": "2026-11-17",
+      "deadlineTime": "17:30",
+      "description": "Đánh giá toàn diện quy trình tạo việc, nhận việc nhóm, gửi báo cáo và xét duyệt giữa Admin, Manager và User.",
+      "ownerId": "user_admin",
+      "assigneeId": "user_member2",
+      "assigneeIds": [
+        "user_member2",
+        "user_member"
+      ],
+      "status": "awaiting-review",
+      "createdAt": "2026-11-12",
+      "acceptedAt": "2026-11-12T10:00:00.000Z",
+      "submittedForReviewAt": "2026-11-15T16:45:00.000Z",
+      "statusBeforeReview": "in-progress",
+      "subtasks": [
+        {
+          "id": "sub_demo_02_1",
+          "text": "Kiểm thử luồng đăng nhập và ẩn menu quản trị với User",
+          "done": true,
+          "comments": [
+            {
+              "id": "submsg_02_1",
+              "userId": "user_member2",
+              "username": "user2",
+              "name": "Người dùng 2",
+              "text": "User chỉ thấy nhóm Tổng quan & Công việc, mục Quản trị được ẩn hoàn toàn.",
+              "attachments": [],
+              "createdAt": "2026-11-13T10:00:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "sub_demo_02_2",
+          "text": "Kiểm thử quyền tạo danh mục của Manager",
+          "done": true,
+          "comments": [
+            {
+              "id": "submsg_02_2",
+              "userId": "user_member",
+              "username": "user",
+              "name": "Người dùng",
+              "text": "Manager tạo/sửa danh mục và giao việc cho nhân viên hoạt động chính xác.",
+              "attachments": [],
+              "createdAt": "2026-11-14T11:20:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "sub_demo_02_3",
+          "text": "Kiểm thử gửi yêu cầu hoàn thành và thông báo chuông",
+          "done": true,
+          "comments": [
+            {
+              "id": "submsg_02_3",
+              "userId": "user_member2",
+              "username": "user2",
+              "name": "Người dùng 2",
+              "text": "Thông báo chuông gửi đúng về Admin khi nhân viên nộp báo cáo.",
+              "attachments": [],
+              "createdAt": "2026-11-15T14:10:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "sub_demo_02_4",
+          "text": "Tổng hợp biên bản kiểm thử gửi Admin duyệt",
+          "done": true,
+          "comments": [
+            {
+              "id": "submsg_02_4",
+              "userId": "user_member2",
+              "username": "user2",
+              "name": "Người dùng 2",
+              "text": "Đã hoàn tất 100% test case và gửi báo cáo chờ Admin xét duyệt.",
+              "attachments": [],
+              "createdAt": "2026-11-15T16:40:00.000Z"
+            }
+          ]
+        }
+      ],
+      "reports": [
+        {
+          "id": "report_demo_02_1",
+          "text": "Đã kiểm thử đầy đủ 12 kịch bản phân quyền giữa Admin, Manager và User. Tất cả chức năng đạt yêu cầu, kính chuyển Admin duyệt hoàn thành.",
+          "attachments": [],
+          "userId": "user_member2",
+          "username": "user2",
+          "createdAt": "2026-11-15T16:45:00.000Z",
+          "type": "completion",
+          "review": null
+        }
+      ],
+      "comments": [],
+      "activity": [
+        {
+          "id": "act_demo_02_2",
+          "type": "submitted",
+          "text": "Đã gửi yêu cầu duyệt hoàn thành",
+          "userId": "user_member2",
+          "userName": "Người dùng 2",
+          "createdAt": "2026-11-15T16:45:00.000Z"
+        },
+        {
+          "id": "act_demo_02_1",
+          "type": "created",
+          "text": "Đã tạo công việc",
+          "userId": "user_admin",
+          "userName": "Quản trị viên",
+          "createdAt": "2026-11-12T08:30:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "task_demo_03",
+      "title": "Chuẩn hóa tài liệu hướng dẫn sử dụng hệ thống",
+      "categoryId": "cat_docs",
+      "categoryName": "Tài liệu",
+      "priority": "medium",
+      "deadline": "2026-11-14",
+      "deadlineTime": "17:00",
+      "description": "Biên soạn tài liệu hướng dẫn thao tác cho nhân viên mới, quy trình báo cáo tiến độ và xác thực email OTP.",
+      "ownerId": "user_admin",
+      "assigneeId": "user_member2",
+      "assigneeIds": [
+        "user_member2"
+      ],
+      "status": "completed",
+      "createdAt": "2026-11-10",
+      "acceptedAt": "2026-11-10T10:00:00.000Z",
+      "completedAt": "2026-11-14T16:00:00.000Z",
+      "subtasks": [
+        {
+          "id": "sub_demo_03_1",
+          "text": "Viết hướng dẫn đăng nhập và xác thực OTP",
+          "done": true,
+          "comments": [
+            {
+              "id": "submsg_03_1",
+              "userId": "user_member2",
+              "username": "user2",
+              "name": "Người dùng 2",
+              "text": "Đã hoàn thành phần hướng dẫn OTP 6 số và đổi mật khẩu.",
+              "attachments": [],
+              "createdAt": "2026-11-11T14:00:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "sub_demo_03_2",
+          "text": "Bổ sung minh họa quy trình checklist và báo cáo",
+          "done": true,
+          "comments": [
+            {
+              "id": "submsg_03_2",
+              "userId": "user_member2",
+              "username": "user2",
+              "name": "Người dùng 2",
+              "text": "Đã cập nhật ảnh chụp minh họa từng bước.",
+              "attachments": [],
+              "createdAt": "2026-11-13T11:30:00.000Z"
+            }
+          ]
+        }
+      ],
+      "reports": [
+        {
+          "id": "report_demo_03_1",
+          "text": "Tài liệu hướng dẫn đã hoàn chỉnh và biên tập rõ ràng cho cả 3 vai trò.",
+          "attachments": [],
+          "userId": "user_member2",
+          "username": "user2",
+          "createdAt": "2026-11-14T15:00:00.000Z",
+          "type": "completion",
+          "review": {
+            "decision": "approved",
+            "score": 9.5,
+            "comment": "Tài liệu trình bày mạch lạc, đầy đủ bước thao tác.",
+            "reviewerId": "user_admin",
+            "reviewerName": "Quản trị viên",
+            "reviewedAt": "2026-11-14T16:00:00.000Z"
+          }
+        }
+      ],
+      "comments": [],
+      "activity": [
+        {
+          "id": "act_demo_03_2",
+          "type": "approved",
+          "text": "Admin đã duyệt hoàn thành",
+          "userId": "user_admin",
+          "userName": "Quản trị viên",
+          "createdAt": "2026-11-14T16:00:00.000Z"
+        },
+        {
+          "id": "act_demo_03_1",
+          "type": "created",
+          "text": "Đã tạo công việc",
+          "userId": "user_admin",
+          "userName": "Quản trị viên",
+          "createdAt": "2026-11-10T09:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "task_demo_04",
+      "title": "Tối ưu responsive giao diện danh sách công việc trên Mobile",
+      "categoryId": "cat_design",
+      "categoryName": "Thiết kế giao diện",
+      "priority": "high",
+      "deadline": "2026-11-15",
+      "deadlineTime": "17:00",
+      "description": "Kiểm tra hiển thị bảng công việc, bộ lọc và thanh công cụ trên màn hình điện thoại 375px - 430px.",
+      "ownerId": "user_admin",
+      "assigneeId": "user_member",
+      "assigneeIds": [
+        "user_member"
+      ],
+      "status": "in-progress",
+      "createdAt": "2026-11-11",
+      "acceptedAt": "2026-11-11T13:00:00.000Z",
+      "subtasks": [
+        {
+          "id": "sub_demo_04_1",
+          "text": "Kiểm tra độ rộng thanh tìm kiếm và dropdown bộ lọc",
+          "done": true,
+          "comments": [
+            {
+              "id": "submsg_04_1",
+              "userId": "user_member",
+              "username": "user",
+              "name": "Người dùng",
+              "text": "Đã chỉnh lại khoảng cách bộ lọc không bị tràn ngang.",
+              "attachments": [],
+              "createdAt": "2026-11-13T16:00:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "sub_demo_04_2",
+          "text": "Hoàn thiện hiển thị Kanban vuốt ngang trên Mobile",
+          "done": false,
+          "comments": []
+        }
+      ],
+      "reports": [],
+      "comments": [],
+      "activity": [
+        {
+          "id": "act_demo_04_1",
+          "type": "created",
+          "text": "Đã tạo công việc",
+          "userId": "user_admin",
+          "userName": "Quản trị viên",
+          "createdAt": "2026-11-11T09:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "task_demo_05",
+      "title": "Cập nhật nội dung thông báo nhắc hạn tự động",
+      "categoryId": "cat_content",
+      "categoryName": "Nội dung",
+      "priority": "medium",
+      "deadline": "2026-11-19",
+      "deadlineTime": "17:00",
+      "description": "Chuẩn hóa mẫu câu nhắc hạn cho quản lý và phản hồi nhanh của nhân viên để giữ giọng văn chuyên nghiệp.",
+      "ownerId": "user_manager",
+      "assigneeId": "user_member",
+      "assigneeIds": [
+        "user_member"
+      ],
+      "status": "needs-revision",
+      "createdAt": "2026-11-12",
+      "acceptedAt": "2026-11-12T14:00:00.000Z",
+      "subtasks": [
+        {
+          "id": "sub_demo_05_1",
+          "text": "Soạn thảo bộ mẫu câu nhắc nhanh cho quản lý",
+          "done": true,
+          "comments": [
+            {
+              "id": "submsg_05_1",
+              "userId": "user_member",
+              "username": "user",
+              "name": "Người dùng",
+              "text": "Đã gửi 3 mẫu câu nhắc hạn theo mức độ ưu tiên.",
+              "attachments": [],
+              "createdAt": "2026-11-14T09:30:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "sub_demo_05_2",
+          "text": "Bổ sung mẫu câu cho trường hợp quá hạn dưới 24 giờ",
+          "done": false,
+          "comments": [
+            {
+              "id": "submsg_05_2",
+              "userId": "user_admin",
+              "username": "admin",
+              "name": "Quản trị viên",
+              "text": "Cần bổ sung thêm mẫu nhắc riêng cho việc quá hạn dưới 24 giờ rồi gửi duyệt lại.",
+              "attachments": [],
+              "createdAt": "2026-11-15T11:00:00.000Z"
+            }
+          ]
+        }
+      ],
+      "reports": [
+        {
+          "id": "report_demo_05_1",
+          "text": "Đã hoàn thành bộ mẫu câu nhắc hạn cơ bản.",
+          "attachments": [],
+          "userId": "user_member",
+          "username": "user",
+          "createdAt": "2026-11-15T09:00:00.000Z",
+          "type": "completion",
+          "review": {
+            "decision": "rejected",
+            "score": 6.5,
+            "comment": "Bổ sung thêm mẫu nhắc cho công việc quá hạn dưới 24 giờ.",
+            "reviewerId": "user_admin",
+            "reviewerName": "Quản trị viên",
+            "reviewedAt": "2026-11-15T11:00:00.000Z"
+          }
+        }
+      ],
+      "comments": [],
+      "activity": [
+        {
+          "id": "act_demo_05_2",
+          "type": "rejected",
+          "text": "Admin yêu cầu làm lại",
+          "userId": "user_admin",
+          "userName": "Quản trị viên",
+          "createdAt": "2026-11-15T11:00:00.000Z"
+        },
+        {
+          "id": "act_demo_05_1",
+          "type": "created",
+          "text": "Đã tạo công việc",
+          "userId": "user_manager",
+          "userName": "Quản lý",
+          "createdAt": "2026-11-12T10:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "task_demo_06",
+      "title": "Kiểm tra định kỳ dữ liệu sao lưu hệ thống tuần",
+      "categoryId": "cat_testing",
+      "categoryName": "Kiểm thử",
+      "priority": "medium",
+      "deadline": "2026-11-21",
+      "deadlineTime": "17:00",
+      "description": "Kiểm tra tính toàn vẹn của tệp sao lưu và lịch sử hoạt động vào cuối mỗi tuần làm việc.",
+      "ownerId": "user_manager",
+      "assigneeId": "user_member2",
+      "assigneeIds": [
+        "user_member2",
+        "user_member"
+      ],
+      "status": "pending",
+      "createdAt": "2026-11-15",
+      "repeat": {
+        "frequency": "weekly",
+        "mode": "after_complete",
+        "intervalDays": 7,
+        "endDate": "2026-12-31"
+      },
+      "subtasks": [
+        {
+          "id": "sub_demo_06_1",
+          "text": "Đối chiếu danh sách tài khoản và phân quyền",
+          "done": false,
+          "comments": []
+        },
+        {
+          "id": "sub_demo_06_2",
+          "text": "Kiểm tra dung lượng thư mục uploads và backups",
+          "done": false,
+          "comments": []
+        }
+      ],
+      "reports": [],
+      "comments": [],
+      "activity": [
+        {
+          "id": "act_demo_06_1",
+          "type": "created",
+          "text": "Đã tạo công việc lặp lại hàng tuần",
+          "userId": "user_manager",
+          "userName": "Quản lý",
+          "createdAt": "2026-11-15T09:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "task_demo_07",
+      "title": "Đề xuất bổ sung mẫu báo cáo tuần cho nhóm Nội dung",
+      "categoryId": "cat_content",
+      "categoryName": "Nội dung",
+      "priority": "low",
+      "deadline": "2026-11-24",
+      "deadlineTime": "17:00",
+      "description": "Nhân viên đề xuất tạo sẵn mẫu báo cáo tuần giúp tổng hợp nhanh số bài viết và tiến độ duyệt.",
+      "ownerId": "user_member2",
+      "assigneeId": null,
+      "assigneeIds": [],
+      "status": "request-pending",
+      "createdAt": "2026-11-16",
+      "subtasks": [
+        {
+          "id": "sub_demo_07_1",
+          "text": "Tổng hợp các trường thông tin cần có trong báo cáo tuần",
+          "done": false,
+          "comments": []
+        },
+        {
+          "id": "sub_demo_07_2",
+          "text": "Trình Quản trị viên duyệt và giao nhân sự thực hiện",
+          "done": false,
+          "comments": []
+        }
+      ],
+      "reports": [],
+      "comments": [],
+      "activity": [
+        {
+          "id": "act_demo_07_1",
+          "type": "created",
+          "text": "Nhân viên đã gửi đề xuất công việc mới",
+          "userId": "user_member2",
+          "userName": "Người dùng 2",
+          "createdAt": "2026-11-16T08:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "task_demo_08",
+      "title": "Lưu trữ bộ tài liệu hướng dẫn phiên bản cũ (v1)",
+      "categoryId": "cat_docs",
+      "categoryName": "Tài liệu",
+      "priority": "low",
+      "deadline": "2026-11-20",
+      "deadlineTime": "17:00",
+      "description": "Công việc rà soát tài liệu v1 được đề nghị hủy vì đã thay thế hoàn toàn bằng bộ tài liệu v2.",
+      "ownerId": "user_admin",
+      "assigneeId": "user_member2",
+      "assigneeIds": [
+        "user_member2"
+      ],
+      "status": "cancelled",
+      "createdAt": "2026-11-10",
+      "cancellationRequest": {
+        "status": "approved",
+        "reason": "Đã chuyển toàn bộ sang bộ tài liệu hướng dẫn v2 mới.",
+        "requestedBy": "user_member2",
+        "requestedByName": "Người dùng 2",
+        "requestedAt": "2026-11-13T10:00:00.000Z",
+        "reviewedBy": "user_admin",
+        "reviewedByName": "Quản trị viên",
+        "reviewedAt": "2026-11-13T11:30:00.000Z"
+      },
+      "subtasks": [
+        {
+          "id": "sub_demo_08_1",
+          "text": "Kiểm tra danh sách file v1 còn liên kết",
+          "done": false,
+          "comments": []
+        }
+      ],
+      "reports": [],
+      "comments": [],
+      "activity": [
+        {
+          "id": "act_demo_08_2",
+          "type": "cancelled",
+          "text": "Admin đã duyệt hủy công việc",
+          "userId": "user_admin",
+          "userName": "Quản trị viên",
+          "createdAt": "2026-11-13T11:30:00.000Z"
+        },
+        {
+          "id": "act_demo_08_1",
+          "type": "created",
+          "text": "Đã tạo công việc",
+          "userId": "user_admin",
+          "userName": "Quản trị viên",
+          "createdAt": "2026-11-10T08:00:00.000Z"
+        }
+      ]
+    }
+  ]
 }
