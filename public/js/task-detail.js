@@ -300,11 +300,42 @@ function setupRequestReview() {
   document.querySelector('.task-detail-card .task-detail-badges')?.after(panel);
 }
 
+function setupActivityDropbox() {
+  const box = document.getElementById('task-activity-dropbox');
+  const toggle = document.getElementById('task-activity-toggle');
+  const menu = document.getElementById('task-activity-dropdown');
+  if (!box || !toggle || !menu || box.dataset.handlerAttached) return;
+
+  const setOpen = open => {
+    menu.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    box.classList.toggle('is-open', open);
+  };
+
+  toggle.addEventListener('click', event => {
+    event.stopPropagation();
+    setOpen(menu.hidden);
+  });
+  document.addEventListener('click', event => {
+    if (!box.contains(event.target)) setOpen(false);
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !menu.hidden) setOpen(false);
+  });
+  box.dataset.handlerAttached = 'true';
+}
+
 function renderTaskActivity() {
+  setupActivityDropbox();
   const container = document.getElementById('task-activity-list');
-  if (!container) return;
+  const countBadge = document.getElementById('task-activity-count');
   const activity = Array.isArray(currentTask.activity) ? currentTask.activity : [];
-  container.innerHTML = activity.length ? activity.slice(0, 30).map(item => `<article class="activity-item"><span class="activity-dot"></span><div><strong>${escapeHtml(item.text || 'Cập nhật công việc')}</strong><p>${escapeHtml(item.userName || 'Người dùng')} · ${formatReportDateTime(item.createdAt)}</p></div></article>`).join('') : '<p class="text-muted">Hoạt động sẽ xuất hiện khi có cập nhật.</p>';
+  if (countBadge) {
+    countBadge.textContent = String(activity.length);
+    countBadge.hidden = activity.length === 0;
+  }
+  if (!container) return;
+  container.innerHTML = activity.length ? activity.slice(0, 30).map(item => `<article class="activity-item"><span class="activity-dot"></span><div><strong>${escapeHtml(item.text || 'Cập nhật công việc')}</strong><p>${escapeHtml(item.userName || 'Người dùng')} · ${formatReportDateTime(item.createdAt)}</p></div></article>`).join('') : '<p class="text-muted" style="padding: 12px;">Hoạt động sẽ xuất hiện khi có cập nhật.</p>';
 }
 
 function setupAssigneeActions() {
@@ -576,23 +607,71 @@ function handleReportReview(event) {
   showToast(decision === 'approved' ? '\u0110\u00e3 duy\u1ec7t ho\u00e0n th\u00e0nh c\u00f4ng vi\u1ec7c.' : '\u0110\u00e3 chuy\u1ec3n c\u00f4ng vi\u1ec7c sang C\u1ea7n l\u00e0m l\u1ea1i.' , 'success');
 }
 
+let pendingTaskCommentReply = null;
+
+function clearTaskCommentReply() {
+  pendingTaskCommentReply = null;
+  const ctx = document.getElementById('task-comment-reply-context');
+  if (ctx) ctx.hidden = true;
+}
+
 function renderTaskComments() {
   const list = document.getElementById('task-comments-list');
   if (!list) return;
   const comments = Array.isArray(currentTask.comments) ? currentTask.comments : [];
-  list.innerHTML = comments.length ? comments.map(comment => `<article class="task-comment"><div><strong>${escapeHtml(comment.name || comment.username || 'User')}</strong><time>${formatReportDateTime(comment.createdAt)}</time></div><p>${escapeHtml(comment.text)}</p></article>`).join('') : '<p class="text-muted">Ch\u01b0a c\u00f3 trao \u0111\u1ed5i n\u00e0o.</p>';
+  const canReply = Auth.canAccessTask(currentTask);
+  list.innerHTML = comments.length ? comments.map(comment => {
+    const authorName = comment.name || comment.username || 'User';
+    const replyQuote = comment.replyTo?.name
+      ? `<blockquote class="task-comment-reply-quote"><strong>${escapeHtml(comment.replyTo.name)}</strong><span>${escapeHtml(comment.replyTo.text || '')}</span></blockquote>`
+      : '';
+    const replyBtn = canReply
+      ? `<div class="task-comment-actions"><button type="button" class="task-comment-reply-btn" data-comment-id="${escapeHtml(comment.id || '')}" data-user-id="${escapeHtml(comment.userId || '')}" data-author="${escapeHtml(authorName)}" data-text="${escapeHtml(String(comment.text || '').slice(0, 120))}">Phản hồi</button></div>`
+      : '';
+    return `<article class="task-comment">${replyQuote}<div><strong>${escapeHtml(authorName)}</strong><time>${formatReportDateTime(comment.createdAt)}</time></div><p>${escapeHtml(comment.text)}</p>${replyBtn}</article>`;
+  }).join('') : '<p class="text-muted">Ch\u01b0a c\u00f3 trao \u0111\u1ed5i n\u00e0o.</p>';
 }
 
 function setupTaskComments() {
   const form = document.getElementById('task-comment-form');
   const input = document.getElementById('task-comment-input');
+  const list = document.getElementById('task-comments-list');
+  const replyCtx = document.getElementById('task-comment-reply-context');
+  const replyCancel = document.getElementById('task-comment-reply-cancel');
   if (!form || form.dataset.handlerAttached) return;
+
+  list?.addEventListener('click', event => {
+    const btn = event.target.closest('.task-comment-reply-btn');
+    if (!btn) return;
+    pendingTaskCommentReply = {
+      id: btn.dataset.commentId || '',
+      userId: btn.dataset.userId || '',
+      name: btn.dataset.author || 'Người dùng',
+      text: btn.dataset.text || ''
+    };
+    if (replyCtx) {
+      replyCtx.hidden = false;
+      const span = replyCtx.querySelector('span');
+      if (span) span.textContent = `Đang phản hồi ${pendingTaskCommentReply.name}`;
+    }
+    input?.focus();
+    form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  replyCancel?.addEventListener('click', () => {
+    clearTaskCommentReply();
+    input?.focus();
+  });
+
   form.addEventListener('submit', event => {
     event.preventDefault();
-    if (!Storage.addTaskComment(currentTask.id, input.value)) { showToast('Kh\u00f4ng th\u1ec3 g\u1eedi trao \u0111\u1ed5i.', 'error'); return; }
-    Notifications.taskCommented(currentTask, input.value.trim(), Auth.getCurrentUser());
+    const replyTarget = pendingTaskCommentReply;
+    const text = input.value.trim();
+    if (!Storage.addTaskComment(currentTask.id, text, replyTarget)) { showToast('Kh\u00f4ng th\u1ec3 g\u1eedi trao \u0111\u1ed5i.', 'error'); return; }
+    Notifications.taskCommented(currentTask, text, Auth.getCurrentUser(), replyTarget);
     currentTask = Storage.getTaskById(currentTask.id);
     input.value = '';
+    clearTaskCommentReply();
     renderTaskComments();
     renderTaskActivity();
   });
@@ -722,6 +801,8 @@ function renderSubtaskList() {
 
   container.innerHTML = subtasks.map((item, index) => {
     const messages = Array.isArray(item.comments) ? item.comments : [];
+    const hasDiscussionProof = messages.some(msg => Boolean(String(msg?.text || '').trim()) || (Array.isArray(msg?.attachments) && msg.attachments.length > 0));
+    const needsProofBeforeCheck = user?.role === 'user' && !item.done && !hasDiscussionProof;
     const messageMarkup = messages.map(message => {
       const attachments = (Array.isArray(message.attachments) ? message.attachments : []).map(file => {
         const url = typeof file.url === 'string' && /^\/data\/uploads\/(attachments|avatars)\/[a-zA-Z0-9._/-]+$/.test(file.url) ? file.url : '';
@@ -745,13 +826,30 @@ function renderSubtaskList() {
     }).join('');
     const chatToggle = canDiscuss ? '<button type="button" class="subtask-chat-toggle" aria-expanded="false" aria-label="M\u1edf trao \u0111\u1ed5i" title="M\u1edf trao \u0111\u1ed5i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l1.7-3A7.5 7.5 0 1 1 20 11.5Z"/><path d="M8 11.5h.01M12 11.5h.01M16 11.5h.01"/></svg>' + ((item.comments || []).length ? '<span class="subtask-chat-count">' + item.comments.length + '</span>' : '') + '</button>' : '';
     const chat = canDiscuss ? `<form class="subtask-chat-form" data-sub-id="${escapeHtml(item.id)}"><div class="subtask-reply-context" hidden><span></span><button type="button" class="subtask-reply-cancel" aria-label="H\u1ee7y tr\u1ea3 l\u1eddi">&times;</button></div><textarea class="form-control" name="message" rows="2" maxlength="2000" placeholder="Trao \u0111\u1ed5i v\u1ec1 m\u1ee5c n\u00e0y..."></textarea><div class="subtask-chat-toolbar"><label class="subtask-file-picker"><input type="file" name="attachments" multiple accept="image/png,image/jpeg,image/webp,image/gif,image/avif,image/bmp,application/pdf,application/zip,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/octet-stream,text/plain,text/csv"><span>Th\u00eam \u1ea3nh / t\u1ec7p</span></label><small class="subtask-file-list">T\u1ed1i \u0111a 5 t\u1ec7p, 25 MB / t\u1ec7p</small><button class="btn btn-primary btn-sm" type="submit">G\u1eedi</button></div><div class="subtask-file-preview-list" aria-live="polite"></div></form>` : '';
-    return `<article class="subtask-item"><div class="subtask-item-heading"><label class="subtask-check-label"><input type="checkbox" class="subtask-checkbox" data-sub-id="${escapeHtml(item.id)}" ${item.done ? 'checked' : ''} ${canToggle ? '' : 'disabled'}><span class="subtask-number">${index + 1}</span><span class="subtask-title${item.done ? ' is-done' : ''}">${escapeHtml(item.text)}</span></label>${canEdit && subtasks.length > 1 ? `<button type="button" class="btn-icon delete btn-del-subtask" data-sub-id="${escapeHtml(item.id)}" title="X\u00f3a m\u1ee5c checklist" aria-label="X\u00f3a m\u1ee5c checklist">&times;</button>` : ''}${chatToggle}</div><section class="subtask-discussion" ${canDiscuss ? 'hidden' : ''}><div class="subtask-chat-history">${messageMarkup || '<p class="subtask-chat-empty">Ch\u01b0a c\u00f3 trao \u0111\u1ed5i. Ng\u01b0\u1eddi ph\u1ee5 tr\u00e1ch v\u00e0 admin c\u00f3 th\u1ec3 nh\u1eafn tin ho\u1eb7c g\u1eedi t\u1ec7p t\u1ea1i \u0111\u00e2y.</p>'}</div>${chat}</section></article>`;
+    const proofAttr = needsProofBeforeCheck ? ' data-requires-proof="true" title="C\u1ea7n g\u1eedi trao \u0111\u1ed5i, \u1ea3nh ho\u1eb7c t\u1ec7p minh ch\u1ee9ng tr\u01b0\u1edbc khi tick ho\u00e0n th\u00e0nh"' : '';
+    return `<article class="subtask-item"><div class="subtask-item-heading"><label class="subtask-check-label"><input type="checkbox" class="subtask-checkbox" data-sub-id="${escapeHtml(item.id)}"${proofAttr} ${item.done ? 'checked' : ''} ${canToggle ? '' : 'disabled'}><span class="subtask-number">${index + 1}</span><span class="subtask-title${item.done ? ' is-done' : ''}">${escapeHtml(item.text)}</span></label>${canEdit && subtasks.length > 1 ? `<button type="button" class="btn-icon delete btn-del-subtask" data-sub-id="${escapeHtml(item.id)}" title="X\u00f3a m\u1ee5c checklist" aria-label="X\u00f3a m\u1ee5c checklist">&times;</button>` : ''}${chatToggle}</div><section class="subtask-discussion" ${canDiscuss ? 'hidden' : ''}><div class="subtask-chat-history">${messageMarkup || '<p class="subtask-chat-empty">Ch\u01b0a c\u00f3 trao \u0111\u1ed5i. Ng\u01b0\u1eddi ph\u1ee5 tr\u00e1ch v\u00e0 admin c\u00f3 th\u1ec3 nh\u1eafn tin ho\u1eb7c g\u1eedi t\u1ec7p t\u1ea1i \u0111\u00e2y.</p>'}</div>${chat}</section></article>`;
   }).join('');
 
   container.querySelectorAll('.subtask-checkbox').forEach(checkbox => checkbox.addEventListener('change', event => {
     const subtaskId = event.currentTarget.dataset.subId;
     const item = currentTask.subtasks.find(subtask => subtask.id === subtaskId);
     if (!item) return;
+    const messages = Array.isArray(item.comments) ? item.comments : [];
+    const hasDiscussionProof = messages.some(msg => Boolean(String(msg?.text || '').trim()) || (Array.isArray(msg?.attachments) && msg.attachments.length > 0));
+    if (user?.role === 'user' && event.currentTarget.checked && !item.done && !hasDiscussionProof) {
+      event.currentTarget.checked = false;
+      showToast('Vui l\u00f2ng g\u1eedi trao \u0111\u1ed5i, \u1ea3nh ho\u1eb7c t\u1ec7p/th\u01b0 m\u1ee5c minh ch\u1ee9ng trong m\u1ee5c n\u00e0y tr\u01b0\u1edbc khi \u0111\u00e1nh d\u1ea5u ho\u00e0n th\u00e0nh.', 'warning', 4500);
+      const itemEl = event.currentTarget.closest('.subtask-item');
+      const discussion = itemEl?.querySelector('.subtask-discussion');
+      const toggleBtn = itemEl?.querySelector('.subtask-chat-toggle');
+      if (discussion && discussion.hidden) {
+        discussion.hidden = false;
+        discussion.classList.add('is-open');
+        toggleBtn?.setAttribute('aria-expanded', 'true');
+      }
+      discussion?.querySelector('textarea[name="message"]')?.focus();
+      return;
+    }
     const nextSubtasks = currentTask.subtasks.map(subtask => subtask.id === subtaskId ? { ...subtask, done: event.currentTarget.checked } : subtask);
     if (!Storage.updateTask(currentTask.id, { subtasks: nextSubtasks })) {
       showToast('B\u1ea1n kh\u00f4ng c\u00f3 quy\u1ec1n c\u1eadp nh\u1eadt checklist.', 'error');
@@ -903,10 +1001,13 @@ async function handleSubtaskMessage(event) {
       const uploaded = await uploadImage(file, 'attachment');
       attachments.push({ ...uploaded, storage: 'disk' });
     }
+    const targetSubtask = (currentTask.subtasks || []).find(item => item.id === subtaskId);
+    const replyMsg = (targetSubtask?.comments || []).find(msg => msg.id === (form.dataset.replyTo || ''));
     if (!Storage.addSubtaskMessage(currentTask.id, subtaskId, text, attachments, form.dataset.replyTo || null)) {
       showToast('Kh\u00f4ng th\u1ec3 l\u01b0u trao \u0111\u1ed5i cho checklist n\u00e0y.', 'error');
       return;
     }
+    Notifications.subtaskCommented(currentTask, targetSubtask?.text || '', text || (attachments[0]?.name ? `Đã gửi tệp: ${attachments[0].name}` : 'Đã gửi tệp đính kèm'), Auth.getCurrentUser(), replyMsg?.userId || null);
     currentTask = Storage.getTaskById(currentTask.id);
     renderSubtaskFilePreviews(form, []);
     renderSubtaskList();

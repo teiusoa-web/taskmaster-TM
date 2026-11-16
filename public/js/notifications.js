@@ -169,10 +169,22 @@ export const Notifications = {
     const recipientIds = [...relevantManagers(actor.id), task.ownerId].filter(id => id && id !== actor.id);
     addNotification({ recipientIds, title: 'Có báo cáo công việc mới', message: `@${actor.username} đã báo cáo “${task.title}”.`, taskId: task.id, type: 'report' });
   },
-  taskCommented(task, comment, actor) {
+  taskCommented(task, comment, actor, replyTo = null) {
     if (!task || !actor) return;
-    const recipients = [...new Set([task.ownerId, ...getTaskAssigneeIds(task), ...relevantManagers(actor.id)].filter(id => id && id !== actor.id))];
-    addNotification({ recipientIds: recipients, title: 'Bình luận mới trong công việc', message: `@${actor.username}: ${String(comment || '').slice(0, 120)} - ${task.title}`, taskId: task.id, type: 'comment' });
+    const recipients = [...new Set([task.ownerId, ...getTaskAssigneeIds(task), replyTo?.userId, ...relevantManagers(actor.id)].filter(id => id && id !== actor.id))];
+    const title = replyTo?.name ? 'Phản hồi mới trong công việc' : 'Bình luận mới trong công việc';
+    addNotification({ recipientIds: recipients, title, message: `@${actor.username}: ${String(comment || '').slice(0, 120)} - ${task.title}`, taskId: task.id, type: 'comment' });
+  },
+  subtaskCommented(task, subtaskTitle, preview, actor, replyToUserId = null) {
+    if (!task || !actor) return;
+    const recipients = [...new Set([task.ownerId, ...getTaskAssigneeIds(task), replyToUserId, ...relevantManagers(actor.id)].filter(id => id && id !== actor.id))];
+    addNotification({
+      recipientIds: recipients,
+      title: `Trao đổi mới ở checklist: ${subtaskTitle || task.title}`,
+      message: `@${actor.username}: ${String(preview || 'Đã gửi tệp đính kèm').slice(0, 120)} - ${task.title}`,
+      taskId: task.id,
+      type: 'comment'
+    });
   },
   deadlineReminderSent(task, message, actor, recipientIds) {
     if (!task || !actor) return;

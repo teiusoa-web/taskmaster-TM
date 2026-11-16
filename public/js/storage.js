@@ -167,11 +167,21 @@ export const Storage = {
     if (task.status === 'needs-revision') task.status = 'in-progress';
     return this._commit(task, 'progress', 'Đã gửi báo cáo tiến độ');
   },
-  addTaskComment(id, text) {
+  addTaskComment(id, text, replyTo = null) {
     const task = tasks.find(item => item.id === id); const user = Auth.getCurrentUser(); const content = String(text || '').trim();
     if (!task || !user || !content || !Auth.canAccessTask(task)) return false;
-    task.comments ||= []; task.comments.unshift({ id: `comment_${Date.now()}`, text: content, userId: user.id, username: user.username, name: user.name, createdAt: new Date().toISOString() });
-    return this._commit(task, 'comment', 'Đã thêm bình luận');
+    task.comments ||= [];
+    const entry = { id: `comment_${Date.now()}`, text: content, userId: user.id, username: user.username, name: user.name, createdAt: new Date().toISOString() };
+    if (replyTo && replyTo.id) {
+      entry.replyTo = {
+        id: String(replyTo.id),
+        userId: replyTo.userId ? String(replyTo.userId) : '',
+        name: String(replyTo.name || 'Người dùng'),
+        text: String(replyTo.text || '').slice(0, 140)
+      };
+    }
+    task.comments.unshift(entry);
+    return this._commit(task, 'comment', replyTo ? `Đã phản hồi ${entry.replyTo.name}` : 'Đã thêm bình luận');
   },
   requestDeadlineChange(id, deadline, reason) {
     const user = Auth.getCurrentUser(); const task = tasks.find(item => item.id === id); const note = String(reason || '').trim();

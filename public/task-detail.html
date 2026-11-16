@@ -71,6 +71,19 @@
             <div class="task-detail-heading">
               <h2 id="detail-title" style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); line-height: 1.3;">Đang tải...</h2>
               <div class="task-detail-management-actions">
+                <div class="activity-dropbox" id="task-activity-dropbox">
+                  <button type="button" id="task-activity-toggle" class="btn btn-secondary btn-sm activity-dropbox-trigger" aria-expanded="false" aria-haspopup="true" title="Hoạt động gần đây">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
+                    <span>Hoạt động</span>
+                    <span class="activity-dropbox-count" id="task-activity-count" hidden>0</span>
+                  </button>
+                  <div class="activity-dropbox-menu" id="task-activity-dropdown" hidden>
+                    <div class="activity-dropbox-header">
+                      <strong>Hoạt động gần đây</strong>
+                    </div>
+                    <div id="task-activity-list" class="task-activity-list"></div>
+                  </div>
+                </div>
                 <a id="btn-duplicate-task" href="#" class="btn btn-secondary btn-sm">Nhân bản</a>
                 <a id="btn-edit-link" href="#" class="btn btn-secondary btn-sm">Chỉnh sửa</a>
                 <button id="btn-delete-task" class="btn btn-danger btn-sm">Xóa việc</button>
@@ -127,10 +140,17 @@
               <button type="submit" class="btn btn-secondary btn-sm">+ Thêm mục</button>
             </form>
           </section>
-          <section class="card task-detail-card" id="task-activity-card"><h3>Hoạt động gần đây</h3><div id="task-activity-list" class="task-activity-list"></div></section>
           <section class="card task-detail-card" id="task-comments-card">
             <h3>Trao đổi công việc</h3>
-            <form id="task-comment-form" class="task-report-form"><label class="form-label" for="task-comment-input">Viết câu hỏi hoặc cập nhật</label><textarea id="task-comment-input" class="form-control" rows="3" maxlength="2000" required></textarea><button class="btn btn-primary" type="submit">Gửi trao đổi</button></form>
+            <form id="task-comment-form" class="task-report-form">
+              <div class="subtask-reply-context" id="task-comment-reply-context" hidden>
+                <span></span>
+                <button type="button" class="subtask-reply-cancel" id="task-comment-reply-cancel" aria-label="Hủy phản hồi">&times;</button>
+              </div>
+              <label class="form-label" for="task-comment-input">Viết câu hỏi hoặc cập nhật</label>
+              <textarea id="task-comment-input" class="form-control" rows="3" maxlength="2000" required></textarea>
+              <button class="btn btn-primary" type="submit">Gửi trao đổi</button>
+            </form>
             <div id="task-comments-list" class="task-comments-list"></div>
           </section>
           <section class="card task-detail-card" id="deadline-change-card">
