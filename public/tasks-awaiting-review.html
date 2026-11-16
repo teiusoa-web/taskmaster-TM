@@ -1,12 +1,14 @@
-x<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Danh Sách Công Việc - TaskMaster</title>
+  <script>try{const root=document.documentElement;root.dataset.theme=localStorage.getItem('DACK_THEME')==='dark'?'dark':'light';root.dataset.sidebarCollapsed=localStorage.getItem('DACK_SIDEBAR_HIDDEN')==='true'?'true':'false'}catch{document.documentElement.dataset.theme='light';document.documentElement.dataset.sidebarCollapsed='false'}</script>
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <link rel="icon" type="image/png" href="image/favicon-light.png?v=5">
 </head>
 <body class="auth-pending" data-task-view="awaiting-review">
   <div class="app-container">
@@ -16,22 +18,25 @@ x<!DOCTYPE html>
         <div class="brand-text">Task<span>Master</span></div></a>
 
       <nav class="sidebar-nav">
-        <a href="index.html" class="nav-link">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-          Dashboard Thống Kê
-        </a>
-        <a href="tasks.html" class="nav-link active">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-          Danh sách công việc
-        </a>
-        <a href="task-form.html" class="nav-link">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-          Thêm mới công việc
-        </a>
-        <a href="categories.html" class="nav-link">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-          Quản lý danh mục
-        </a>
+        <div class="sidebar-nav-group">
+          <span class="sidebar-group-label">Tổng quan &amp; Công việc</span>
+          <a href="index.html" class="nav-link" aria-label="Dashboard Thống kê">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10.5 12 3l9 7.5M5.25 9v11h13.5V9M9 20v-6h6v6"/></svg>
+            <span class="nav-link-label">Dashboard Thống kê</span>
+          </a>
+          <a href="tasks.html" class="nav-link active" aria-label="Danh sách công việc">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+            <span class="nav-link-label">Danh sách công việc</span>
+          </a>
+          <a href="my-tasks.html" class="nav-link" aria-label="Việc của tôi">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2m8-10a4 4 0 100-8 4 4 0 000 8z"/></svg>
+            <span class="nav-link-label">Việc của tôi</span>
+          </a>
+          <a href="my-calendar.html" class="nav-link" aria-label="Lịch tuần">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 012 2v14H3V6a2 2 0 012-2z"/></svg>
+            <span class="nav-link-label">Lịch tuần</span>
+          </a>
+        </div>
       </nav>
 
       <div class="sidebar-footer">
@@ -68,7 +73,7 @@ x<!DOCTYPE html>
           </div>
 
           <select id="filter-status" class="filter-select">
-            <option value="all">Tất cả trạng thái</option>
+            <option value="all">Trạng thái</option>
             <option value="pending">Chờ xử lý</option>
             <option value="in-progress">Đang làm</option>
             <option value="awaiting-review">Chờ admin duyệt</option>
@@ -78,18 +83,18 @@ x<!DOCTYPE html>
           </select>
 
           <select id="filter-category" class="filter-select">
-            <option value="all">Tất cả danh mục</option>
+            <option value="all">Danh mục</option>
           </select>
 
           <select id="filter-priority" class="filter-select">
-            <option value="all">Tất cả mức ưu tiên</option>
+            <option value="all">Mức ưu tiên</option>
             <option value="high">Ưu tiên: Cao</option>
             <option value="medium">Ưu tiên: Trung bình</option>
             <option value="low">Ưu tiên: Thấp</option>
           </select>
 
           <select id="filter-assignee" class="filter-select" hidden aria-label="Lọc theo tài khoản người dùng">
-            <option value="all">Tất cả người dùng</option>
+            <option value="all">Người dùng</option>
           </select>
 
           <select id="sort-by" class="filter-select">
@@ -105,7 +110,7 @@ x<!DOCTYPE html>
         <section class="card" style="padding: 0; overflow: hidden;">
           <div style="padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color);">
             <h2 style="font-size: 1rem; font-weight: 700;">Danh Sách Hiển Thị</h2>
-            <span class="badge" id="task-count-badge" style="background: #e2e8f0; color: #475569;">0 công việc</span>
+            <span class="badge badge-neutral" id="task-count-badge">0 công việc</span>
           </div>
 
           <div class="table-responsive" style="border: none; border-radius: 0;">
@@ -116,9 +121,8 @@ x<!DOCTYPE html>
                   <th>Danh mục</th>
                   <th>Ng&#432;&#7901;i nh&#7853;n</th>
                   <th>Mức ưu tiên</th>
-                  <th>Hạn chót</th>
+                  <th>Hạn chót</th><th>Tiến độ</th>
                   <th>Trạng thái</th>
-                  <th style="width: 120px;">Hành động</th>
                 </tr>
               </thead>
               <tbody id="task-table-body">

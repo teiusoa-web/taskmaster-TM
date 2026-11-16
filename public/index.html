@@ -4,9 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TaskMaster - Hệ Thống Quản Lý Công Việc Hiện Đại</title>
+  <script>try{const root=document.documentElement;root.dataset.theme=localStorage.getItem('DACK_THEME')==='dark'?'dark':'light';root.dataset.sidebarCollapsed=localStorage.getItem('DACK_SIDEBAR_HIDDEN')==='true'?'true':'false'}catch{document.documentElement.dataset.theme='light';document.documentElement.dataset.sidebarCollapsed='false'}</script>
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <link rel="icon" type="image/png" href="image/favicon-light.png?v=5">
 </head>
 <body class="auth-pending">
   <div class="app-container">
@@ -16,22 +18,25 @@
         <div class="brand-text">Task<span>Master</span></div></a>
 
       <nav class="sidebar-nav">
-        <a href="index.html" class="nav-link active">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-          Dashboard Thống Kê
-        </a>
-        <a href="tasks.html" class="nav-link">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-          Danh sách công việc
-        </a>
-        <a href="task-form.html" class="nav-link">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-          Thêm mới công việc
-        </a>
-        <a href="categories.html" class="nav-link">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-          Quản lý danh mục
-        </a>
+        <div class="sidebar-nav-group">
+          <span class="sidebar-group-label">Tổng quan &amp; Công việc</span>
+          <a href="index.html" class="nav-link active" aria-label="Dashboard Thống kê">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10.5 12 3l9 7.5M5.25 9v11h13.5V9M9 20v-6h6v6"/></svg>
+            <span class="nav-link-label">Dashboard Thống kê</span>
+          </a>
+          <a href="tasks.html" class="nav-link" aria-label="Danh sách công việc">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+            <span class="nav-link-label">Danh sách công việc</span>
+          </a>
+          <a href="my-tasks.html" class="nav-link" aria-label="Việc của tôi">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2m8-10a4 4 0 100-8 4 4 0 000 8z"/></svg>
+            <span class="nav-link-label">Việc của tôi</span>
+          </a>
+          <a href="my-calendar.html" class="nav-link" aria-label="Lịch tuần">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 012 2v14H3V6a2 2 0 012-2z"/></svg>
+            <span class="nav-link-label">Lịch tuần</span>
+          </a>
+        </div>
       </nav>
 
       <div class="sidebar-footer">
@@ -61,64 +66,116 @@
 
       <div class="page-body">
         <section class="card dashboard-welcome">
-          <div><h2 id="dashboard-welcome-title">T&#7893;ng quan c&#244;ng vi&#7879;c</h2><p id="dashboard-welcome-description">Theo d&#245;i ti&#7871;n &#273;&#7897; v&#224; c&#244;ng vi&#7879;c c&#7847;n x&#7917; l&#253;.</p></div>
-          <a href="task-form.html" class="btn btn-primary">+ T&#7841;o c&#244;ng vi&#7879;c m&#7899;i</a>
+          <div class="dashboard-welcome-info">
+            <h2 id="dashboard-welcome-title">Tổng quan công việc</h2>
+            <p id="dashboard-welcome-description">Theo dõi tiến độ và các công việc cần xử lý hôm nay.</p>
+          </div>
+          <div class="dashboard-welcome-actions">
+            <a href="task-form.html" class="btn btn-primary">+ Tạo công việc mới</a>
+          </div>
         </section>
-        <section class="admin-quick-actions" id="admin-quick-actions" aria-label="L&#7889;i t&#7855;t qu&#7843;n tr&#7883;">
-          <a class="admin-action-card" href="users.html"><span class="admin-action-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2m6-10a4 4 0 100-8 4 4 0 000 8zm8-3v6m3-3h-6"/></svg></span><span><strong>Qu&#7843;n l&#253; t&#224;i kho&#7843;n</strong><small>T&#7841;o v&#224; qu&#7843;n l&#253; ng&#432;&#7901;i d&#249;ng</small></span><span class="admin-action-arrow">&#8594;</span></a>
-          <a class="admin-action-card" href="categories.html"><span class="admin-action-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg></span><span><strong>Danh m&#7909;c</strong><small>S&#7855;p x&#7871;p nh&#243;m c&#244;ng vi&#7879;c</small></span><span class="admin-action-arrow">&#8594;</span></a>
-          <a class="admin-action-card" href="tasks-awaiting-review.html"><span class="admin-action-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span><span><strong>Duy&#7879;t c&#244;ng vi&#7879;c</strong><small>Xem c&#225;c b&#225;o c&#225;o ch&#7901; duy&#7879;t</small></span><span class="admin-action-arrow">&#8594;</span></a>
-          <a class="admin-action-card" href="my-calendar.html"><span class="admin-action-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 012 2v14H3V6a2 2 0 012-2z"/></svg></span><span><strong>L&#7883;ch tu&#7847;n</strong><small>Theo d&#245;i l&#7883;ch c&#244;ng vi&#7879;c</small></span><span class="admin-action-arrow">&#8594;</span></a>
+
+        <section class="admin-quick-actions" id="admin-quick-actions" aria-label="Lối tắt quản trị">
+          <a class="admin-action-card" href="users.html">
+            <span class="admin-action-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2m6-10a4 4 0 100-8 4 4 0 000 8zm8-3v6m3-3h-6"/></svg></span>
+            <span><strong>Quản lý tài khoản</strong><small>Tạo và quản lý người dùng</small></span>
+            <span class="admin-action-arrow">&rarr;</span>
+          </a>
+          <a class="admin-action-card" href="categories.html">
+            <span class="admin-action-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg></span>
+            <span><strong>Danh mục</strong><small>Sắp xếp nhóm công việc</small></span>
+            <span class="admin-action-arrow">&rarr;</span>
+          </a>
+          <a class="admin-action-card" href="tasks-awaiting-review.html">
+            <span class="admin-action-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span>
+            <span><strong>Duyệt công việc</strong><small>Xem các báo cáo chờ duyệt</small></span>
+            <span class="admin-action-arrow">&rarr;</span>
+          </a>
+          <a class="admin-action-card" href="my-calendar.html">
+            <span class="admin-action-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 012 2v14H3V6a2 2 0 012-2z"/></svg></span>
+            <span><strong>Lịch tuần</strong><small>Theo dõi tiến độ lịch</small></span>
+            <span class="admin-action-arrow">&rarr;</span>
+          </a>
         </section>
-        <!-- 4 KPI CARDS (Dùng reduce, filter tính toán) -->
+
+        <!-- KPI CARDS -->
         <section class="stats-grid">
-  <a class="stat-card" href="tasks-all.html" aria-label="M&#7903; t&#7845;t c&#7843; c&#244;ng vi&#7879;c"><div class="stat-icon primary" aria-hidden="true"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg></div><div class="stat-info"><h3 id="stat-total">0</h3><p>T&#7893;ng s&#7889; c&#244;ng vi&#7879;c</p></div></a>
-  <a class="stat-card" href="tasks-in-progress.html" aria-label="M&#7903; c&#244;ng vi&#7879;c &#273;ang th&#7921;c hi&#7879;n"><div class="stat-icon warning" aria-hidden="true"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div class="stat-info"><h3 id="stat-in-progress">0</h3><p>&#272;ang th&#7921;c hi&#7879;n</p></div></a>
-  <a class="stat-card" href="tasks-completed.html" aria-label="M&#7903; c&#244;ng vi&#7879;c &#273;&#227; ho&#224;n th&#224;nh"><div class="stat-icon success" aria-hidden="true"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12l4 4L19 6"/></svg></div><div class="stat-info"><h3 id="stat-completed">0</h3><p>&#272;&#227; ho&#224;n th&#224;nh</p></div></a>
-  <a class="stat-card" href="tasks-awaiting-review.html" aria-label="M&#7903; c&#244;ng vi&#7879;c ch&#7901; duy&#7879;t"><div class="stat-icon warning" aria-hidden="true"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div class="stat-info"><h3 id="stat-awaiting-review">0</h3><p>Ch&#7901; admin duy&#7879;t</p></div></a>
-  <a class="stat-card" href="tasks-needs-revision.html" aria-label="M&#7903; c&#244;ng vi&#7879;c c&#7847;n l&#224;m l&#7841;i"><div class="stat-icon warning" aria-hidden="true"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5l2-2 2 2m-2-2v8m7-2a7 7 0 11-14 0 7 7 0 0114 0zm-9 7l-3 3m9-3l3 3"/></svg></div><div class="stat-info"><h3 id="stat-needs-revision">0</h3><p>C&#7847;n l&#224;m l&#7841;i</p></div></a>
-  <a class="stat-card" href="tasks-overdue.html" aria-label="M&#7903; c&#244;ng vi&#7879;c qu&#225; h&#7841;n"><div class="stat-icon danger" aria-hidden="true"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v4m0 4h.01M10.3 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.7 3.86a2 2 0 00-3.4 0z"/></svg></div><div class="stat-info"><h3 id="stat-overdue">0</h3><p>C&#244;ng vi&#7879;c qu&#225; h&#7841;n</p></div></a>
-  <a class="stat-card" href="tasks-cancelled.html" aria-label="M&#7903; c&#244;ng vi&#7879;c b&#7883; h&#7911;y"><div class="stat-icon danger" aria-hidden="true"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"/></svg></div><div class="stat-info"><h3 id="stat-cancelled">0</h3><p>C&#244;ng vi&#7879;c b&#7883; h&#7911;y</p></div></a>
-</section>
-
-        <section class="card cancelled-tasks-card">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;">
-            <h2 style="font-size:1.15rem;font-weight:700;">Công việc bị hủy</h2>
-            <a href="tasks.html" style="font-size:.88rem;color:var(--primary);font-weight:600;">Xem danh sách công việc &rsaquo;</a>
-          </div>
-          <div class="table-responsive">
-            <table class="custom-table">
-              <thead><tr><th>Tên công việc</th><th>Người nhận</th><th>Hạn chót</th><th>Thao tác</th></tr></thead>
-              <tbody id="cancelled-tasks-list"></tbody>
-            </table>
-          </div>
+          <a class="stat-card" href="tasks-all.html" aria-label="Mở tất cả công việc">
+            <div class="stat-icon primary" aria-hidden="true">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+            </div>
+            <div class="stat-info">
+              <h3 id="stat-total">0</h3>
+              <p>Tổng số công việc</p>
+            </div>
+          </a>
+          <a class="stat-card" href="tasks-in-progress.html" aria-label="Mở công việc đang thực hiện">
+            <div class="stat-icon warning" aria-hidden="true">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div class="stat-info">
+              <h3 id="stat-in-progress">0</h3>
+              <p>Đang thực hiện</p>
+            </div>
+          </a>
+          <a class="stat-card" href="tasks-completed.html" aria-label="Mở công việc đã hoàn thành">
+            <div class="stat-icon success" aria-hidden="true">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12l4 4L19 6"/></svg>
+            </div>
+            <div class="stat-info">
+              <h3 id="stat-completed">0</h3>
+              <p>Đã hoàn thành</p>
+            </div>
+          </a>
+          <a class="stat-card" href="tasks-awaiting-review.html" aria-label="Mở công việc chờ duyệt">
+            <div class="stat-icon info" aria-hidden="true">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div class="stat-info">
+              <h3 id="stat-awaiting-review">0</h3>
+              <p>Chờ duyệt</p>
+            </div>
+          </a>
+          <a class="stat-card" href="tasks-needs-revision.html" aria-label="Mở công việc cần làm lại">
+            <div class="stat-icon warning" aria-hidden="true">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5l2-2 2 2m-2-2v8m7-2a7 7 0 11-14 0 7 7 0 0114 0zm-9 7l-3 3m9-3l3 3"/></svg>
+            </div>
+            <div class="stat-info">
+              <h3 id="stat-needs-revision">0</h3>
+              <p>Cần làm lại</p>
+            </div>
+          </a>
+          <a class="stat-card" href="tasks-overdue.html" aria-label="Mở công việc quá hạn">
+            <div class="stat-icon danger" aria-hidden="true">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v4m0 4h.01M10.3 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.7 3.86a2 2 0 00-3.4 0z"/></svg>
+            </div>
+            <div class="stat-info">
+              <h3 id="stat-overdue">0</h3>
+              <p>Quá hạn</p>
+            </div>
+          </a>
+          <a class="stat-card" href="tasks-cancelled.html" aria-label="Mở công việc bị hủy">
+            <div class="stat-icon danger" aria-hidden="true">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"/></svg>
+            </div>
+            <div class="stat-info">
+              <h3 id="stat-cancelled">0</h3>
+              <p>Đã hủy</p>
+            </div>
+          </a>
         </section>
 
-        <!-- GRID CHIA ĐÔI: TIẾN ĐỘ THEO DANH MỤC & CÔNG VIỆC CẦN LÀM GẤP -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; margin-bottom: 32px;">
-          <!-- Thống kê danh mục -->
-          <div class="card">
-            <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 20px;">Tiến độ công việc theo từng mục</h2>
-            <div id="category-stats-list">
-              <!-- Render động bằng JavaScript -->
+        <!-- THANH SỨC KHỎE DỰ ÁN ĐA PHÂN ĐOẠN -->
+        <section class="card project-health-card" id="dashboard-health-bar-card" aria-label="Sức khỏe tiến độ công việc"></section>
+
+        <!-- BẢNG CÔNG VIỆC ƯU TIÊN & GẦN HẠN (Core section) -->
+        <section class="card dashboard-tasks-card">
+          <div class="card-header-bar">
+            <div>
+              <span class="eyebrow">VIỆC CẦN LÀM GẤP</span>
+              <h2>Công việc ưu tiên & Sắp đến hạn</h2>
             </div>
-          </div>
-
-          <!-- Banner mẹo làm việc -->
-          <div class="card" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); color: #fff;">
-            <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 12px; color: #fff;">Năng suất tối ưu mỗi ngày</h2>
-            <p style="font-size: 0.92rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 20px;">
-              Quản lý thời gian hiệu quả bằng phương pháp ưu tiên các công việc có mức độ quan trọng cao và theo dõi sát sao hạn chót (Deadline).
-            </p>
-            <a href="tasks.html" class="btn" style="background: #fff; color: var(--primary);">Xem tất cả công việc →</a>
-          </div>
-        </div>
-
-        <!-- BẢNG VIỆC CẦN LÀM GẤP -->
-        <section class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2 style="font-size: 1.15rem; font-weight: 700;">Công việc ưu tiên & Sắp đến hạn</h2>
-            <a href="tasks.html" style="font-size: 0.88rem; color: var(--primary); font-weight: 600;">Xem toàn bộ danh sách &rsaquo;</a>
+            <a href="tasks.html" class="link-more">Xem toàn bộ danh sách &rsaquo;</a>
           </div>
 
           <div class="table-responsive">
@@ -128,16 +185,91 @@
                   <th>Tên công việc</th>
                   <th>Ưu tiên</th>
                   <th>Hạn chót</th>
+                  <th>Tiến độ</th>
                   <th>Trạng thái</th>
-                  <th>Thao tác</th>
                 </tr>
               </thead>
               <tbody id="upcoming-tasks-list">
-                <!-- Render động bởi dashboard.js -->
+                <tr class="skeleton-table-row">
+                  <td>
+                    <div class="skeleton-cell-flow">
+                      <div class="skeleton-shimmer skeleton-text w-80" style="height: 16px;"></div>
+                      <div class="skeleton-shimmer skeleton-text w-50" style="height: 12px; margin-top: 4px;"></div>
+                    </div>
+                  </td>
+                  <td><div class="skeleton-shimmer skeleton-pill" style="width: 75px; height: 22px;"></div></td>
+                  <td><div class="skeleton-shimmer skeleton-pill" style="width: 85px; height: 22px;"></div></td>
+                  <td><div class="skeleton-shimmer skeleton-pill" style="width: 90px; height: 8px; border-radius: 999px;"></div></td>
+                  <td><div class="skeleton-shimmer skeleton-pill" style="width: 80px; height: 22px;"></div></td>
+                </tr>
+                <tr class="skeleton-table-row">
+                  <td>
+                    <div class="skeleton-cell-flow">
+                      <div class="skeleton-shimmer skeleton-text w-65" style="height: 16px;"></div>
+                      <div class="skeleton-shimmer skeleton-text w-35" style="height: 12px; margin-top: 4px;"></div>
+                    </div>
+                  </td>
+                  <td><div class="skeleton-shimmer skeleton-pill" style="width: 85px; height: 22px;"></div></td>
+                  <td><div class="skeleton-shimmer skeleton-pill" style="width: 80px; height: 22px;"></div></td>
+                  <td><div class="skeleton-shimmer skeleton-pill" style="width: 85px; height: 8px; border-radius: 999px;"></div></td>
+                  <td><div class="skeleton-shimmer skeleton-pill" style="width: 75px; height: 22px;"></div></td>
+                </tr>
+                <tr class="skeleton-table-row">
+                  <td>
+                    <div class="skeleton-cell-flow">
+                      <div class="skeleton-shimmer skeleton-text w-100" style="height: 16px;"></div>
+                      <div class="skeleton-shimmer skeleton-text w-50" style="height: 12px; margin-top: 4px;"></div>
+                    </div>
+                  </td>
+                  <td><div class="skeleton-shimmer skeleton-pill" style="width: 70px; height: 22px;"></div></td>
+                  <td><div class="skeleton-shimmer skeleton-pill" style="width: 90px; height: 22px;"></div></td>
+                  <td><div class="skeleton-shimmer skeleton-pill" style="width: 95px; height: 8px; border-radius: 999px;"></div></td>
+                  <td><div class="skeleton-shimmer skeleton-pill" style="width: 85px; height: 22px;"></div></td>
+                </tr>
               </tbody>
             </table>
           </div>
         </section>
+
+        <!-- DÒNG PHỤ: TIẾN ĐỘ THEO MỤC & CÔNG VIỆC BỊ HỦY -->
+        <div class="dashboard-split-grid">
+          <!-- Thống kê danh mục -->
+          <section class="card category-stats-card">
+            <div class="card-header-bar">
+              <div>
+                <span class="eyebrow">THEO DÕI DANH MỤC</span>
+                <h2>Tiến độ theo từng danh mục</h2>
+              </div>
+              <a href="categories.html" class="link-more">Quản lý &rsaquo;</a>
+            </div>
+            <div id="category-stats-list">
+              <!-- Render động bằng JavaScript -->
+            </div>
+          </section>
+
+          <!-- Bảng việc bị hủy gần đây -->
+          <section class="card cancelled-tasks-card">
+            <div class="card-header-bar">
+              <div>
+                <span class="eyebrow">LỊCH SỬ HUỶ</span>
+                <h2>Công việc bị hủy</h2>
+              </div>
+              <a href="tasks-cancelled.html" class="link-more">Xem chi tiết &rsaquo;</a>
+            </div>
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Tên công việc</th>
+                    <th>Người nhận</th>
+                    <th>Hạn chót</th>
+                  </tr>
+                </thead>
+                <tbody id="cancelled-tasks-list"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
       </div>
     </main>
   </div>

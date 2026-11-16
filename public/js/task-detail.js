@@ -1,4 +1,4 @@
-﻿import { Auth } from './auth.js';
+import { Auth } from './auth.js';
 // task-detail.js - Quản lý trang Chi tiết công việc & Checklist con (Subtasks)
 import { Storage } from './storage.js';
 import { formatDate, getStatusMeta, getPriorityMeta, isOverdue, getQueryParam, generateId } from './utils.js';
@@ -12,7 +12,17 @@ const reportAttachmentUrls = new Set();
 const subtaskSelectedFiles = new WeakMap();
 const isImageAttachment = file => file.type.startsWith('image/') || /\.(avif|bmp|gif|jpe?g|png|svg|webp|tiff?)$/i.test(file.name);
 
+function isUserAssignee(task, user) {
+  return Boolean(
+    user &&
+    ['user', 'manager'].includes(user.role) &&
+    task &&
+    (task.assigneeId === user.id || (Array.isArray(task.assigneeIds) && task.assigneeIds.includes(user.id)))
+  );
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+  await Auth.loadUsers();
   await Storage.init();
   const taskId = getQueryParam('id');
 
@@ -29,11 +39,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  Storage._normalizeChecklists();
-  currentTask = Storage.getTaskById(taskId);
-
   renderTaskDetail();
   setupSubtaskHandlers();
+  window.addEventListener('task-deadline-message-sent', event => {
+    if (event.detail?.taskId === currentTask?.id) {
+      currentTask = Storage.getTaskById(currentTask.id) || currentTask;
+      renderTaskComments();
+      renderTaskActivity();
+    }
+  });
 });
 
 /**
@@ -41,17 +55,29 @@ document.addEventListener('DOMContentLoaded', async () => {
  */
 function renderTaskDetail() {
   const categories = Storage.getCategories();
-  const category = categories.find(c => c.id === currentTask.categoryId);
+  const category = categories.find(c => c.id === currentTask.categoryId)
+    || categories.find(c => currentTask.categoryName && c.name.trim().toLocaleLowerCase() === String(currentTask.categoryName).trim().toLocaleLowerCase());
   const statusMeta = currentTask.requestReview?.status === 'rejected'
     ? { label: 'Yêu cầu bị từ chối', className: 'badge-status-cancelled' }
     : getStatusMeta(currentTask.status);
   const priorityMeta = getPriorityMeta(currentTask.priority);
-  const overdue = isOverdue(currentTask.deadline, currentTask.status);
+  const overdue = isOverdue(currentTask.deadline, currentTask.status, currentTask.deadlineTime);
 
   document.getElementById('detail-title').textContent = currentTask.title;
   document.getElementById('detail-desc').textContent = currentTask.description || 'Chưa có mô tả chi tiết.';
-  document.getElementById('detail-category').textContent = category ? category.name : 'Chưa phân loại';
-  document.getElementById('detail-category-badge').style.background = category ? category.color : 'var(--primary)';
+  renderDetailAttachments();
+  const categoryName = category ? category.name : (currentTask.categoryName || 'Chưa phân loại');
+  const rawCategoryColor = String(category?.color || '').trim();
+  const categoryColor = /^#[0-9a-f]{3}$/i.test(rawCategoryColor)
+    ? `#${rawCategoryColor[1]}${rawCategoryColor[1]}${rawCategoryColor[2]}${rawCategoryColor[2]}${rawCategoryColor[3]}${rawCategoryColor[3]}`
+    : (/^#[0-9a-f]{6}$/i.test(rawCategoryColor) ? rawCategoryColor : (category || currentTask.categoryName ? '#6366f1' : '#64748b'));
+  document.getElementById('detail-category').textContent = categoryName;
+  document.getElementById('detail-category-badge').style.background = categoryColor;
+  const categoryChip = document.getElementById('detail-category-chip');
+  if (categoryChip) {
+    categoryChip.style.borderColor = `${categoryColor}44`;
+    categoryChip.style.background = `${categoryColor}14`;
+  }
   
   const statusBadge = document.getElementById('detail-status');
   statusBadge.textContent = statusMeta.label;
@@ -62,7 +88,7 @@ function renderTaskDetail() {
   priorityBadge.textContent = priorityMeta.label;
   priorityBadge.className = `badge ${priorityMeta.className}`;
 
-  document.getElementById('detail-deadline').textContent = formatDate(currentTask.deadline);
+  document.getElementById('detail-deadline').textContent = formatDate(currentTask.deadline, currentTask.deadlineTime);
   if (overdue) {
     const overdueLabel = document.createElement('span');
     overdueLabel.style.cssText = 'color: var(--danger); font-weight: 700;';
@@ -70,30 +96,79 @@ function renderTaskDetail() {
     document.getElementById('detail-deadline').append(overdueLabel);
   }
   document.getElementById('detail-created').textContent = formatDate(currentTask.createdAt);
-  const assignee = Auth.getUsers().find(user => user.id === (currentTask.assigneeId || (currentTask.status === 'request-pending' ? '' : currentTask.ownerId)));
   const assigneeContainer = document.getElementById('detail-assignee');
   if (assigneeContainer) {
     assigneeContainer.replaceChildren();
-    if (assignee) {
-      const assigneeAvatar = document.createElement('span');
-      assigneeAvatar.className = `assignee-avatar${assignee.avatar ? ' has-photo' : ''}`;
-      if (assignee.avatar) {
-        const photo = document.createElement('img');
-        photo.src = assignee.avatar;
-        photo.alt = '';
-        assigneeAvatar.append(photo);
-      } else {
-        assigneeAvatar.textContent = assignee.name.split(/\s+/).map(part => part[0]).slice(-2).join('').toUpperCase();
+    const allUsers = Auth.getUsers();
+    const primaryAssignee = allUsers.find(user => user.id === (currentTask.assigneeId || (currentTask.status === 'request-pending' ? '' : currentTask.ownerId)));
+    const allAssigneeIds = Array.isArray(currentTask.assigneeIds) && currentTask.assigneeIds.length
+      ? currentTask.assigneeIds
+      : (primaryAssignee ? [primaryAssignee.id] : []);
+
+    if (allAssigneeIds.length > 0) {
+      const teamWrapper = document.createElement('div');
+      teamWrapper.className = 'task-team-assignees';
+      teamWrapper.style.cssText = 'display:flex; flex-direction:column; gap:6px;';
+
+      allAssigneeIds.forEach(uid => {
+        const u = allUsers.find(user => user.id === uid);
+        if (!u) return;
+        const row = document.createElement('div');
+        row.className = 'user-profile-trigger';
+        row.setAttribute('role', 'button');
+        row.tabIndex = 0;
+        row.title = `Nhấn để xem thông tin của ${u.name || u.username}`;
+        row.dataset.userProfileId = u.id;
+        row.dataset.groupIds = allAssigneeIds.join(',');
+        row.dataset.taskId = currentTask.id || '';
+        row.dataset.taskTitle = currentTask.title || '';
+
+        const avatar = document.createElement('span');
+        avatar.className = `assignee-avatar${u.avatar ? ' has-photo' : ''}`;
+        if (u.avatar) {
+          const photo = document.createElement('img');
+          photo.src = u.avatar;
+          photo.alt = '';
+          avatar.append(photo);
+        } else {
+          avatar.textContent = u.name.split(/\s+/).map(part => part[0]).slice(-2).join('').toUpperCase();
+        }
+
+        const nameSpan = document.createElement('span');
+        nameSpan.innerHTML = `<strong>${escapeHtml(u.name)}</strong>`;
+        row.append(avatar, nameSpan);
+        teamWrapper.append(row);
+      });
+
+      if (allAssigneeIds.length > 1) {
+        const teamBadge = document.createElement('span');
+        teamBadge.className = 'badge badge-neutral user-group-trigger';
+        teamBadge.setAttribute('role', 'button');
+        teamBadge.tabIndex = 0;
+        teamBadge.title = 'Nhấn để xem danh sách nhóm thực hiện';
+        teamBadge.dataset.assigneeIds = allAssigneeIds.join(',');
+        teamBadge.dataset.taskId = currentTask.id || '';
+        teamBadge.dataset.taskTitle = currentTask.title || '';
+        teamBadge.style.cssText = 'align-self:flex-start; margin-top:2px; font-size:0.75rem;';
+        teamBadge.textContent = `Nhóm thực hiện: ${allAssigneeIds.length} người`;
+        teamWrapper.prepend(teamBadge);
       }
-      const assigneeName = document.createElement('span');
-      assigneeName.textContent = assignee.name;
-      assigneeContainer.append(assigneeAvatar, assigneeName);
+      assigneeContainer.append(teamWrapper);
     } else {
-      assigneeContainer.textContent = 'Ch\u01b0a ph\u00e2n c\u00f4ng';
+      assigneeContainer.textContent = 'Chưa phân công';
     }
   }
 
-  // Link sửa công việc
+  // Link nhân bản, sửa & xóa công việc
+  const duplicateLink = document.getElementById('btn-duplicate-task');
+  if (duplicateLink) {
+    if (Auth.canCreateTask()) {
+      duplicateLink.hidden = false;
+      duplicateLink.href = `task-form.html?duplicate=${encodeURIComponent(currentTask.id)}`;
+    } else {
+      duplicateLink.hidden = true;
+    }
+  }
   const editLink = document.getElementById('btn-edit-link');
   const deleteButton = document.getElementById('btn-delete-task');
   if (Auth.canEditTask(currentTask)) editLink.href = `task-form.html?id=${currentTask.id}`;
@@ -120,6 +195,72 @@ function renderTaskDetail() {
   renderTaskActivity();
   setupTaskComments();
   setupDeadlineChange();
+  setupDeadlineReminderBanner();
+}
+
+function renderDetailAttachments() {
+  const section = document.getElementById('detail-attachments-section');
+  const list = document.getElementById('detail-attachments-list');
+  if (!section || !list) return;
+  const items = Array.isArray(currentTask?.attachments) ? currentTask.attachments : [];
+  if (!items.length) {
+    section.hidden = true;
+    list.replaceChildren();
+    return;
+  }
+  section.hidden = false;
+  list.replaceChildren();
+  items.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'task-attachment-chip';
+
+    const kind = document.createElement('span');
+    kind.className = 'task-attachment-kind';
+    kind.textContent = item.kind === 'link' ? 'Link' : 'Tệp';
+
+    const link = document.createElement('a');
+    link.href = item.url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.className = 'task-attachment-name';
+    link.textContent = item.name || item.url;
+
+    const meta = document.createElement('span');
+    meta.className = 'task-attachment-meta';
+    meta.textContent = item.kind === 'link' ? item.url : (item.size ? `${(item.size / 1024).toFixed(1)} KB` : 'Tài liệu đính kèm');
+
+    row.append(kind, link, meta);
+    list.append(row);
+  });
+}
+
+function setupDeadlineReminderBanner() {
+  document.getElementById('task-deadline-reminder-banner')?.remove();
+  if (!currentTask || ['completed', 'cancelled'].includes(currentTask.status)) return;
+  const info = Notifications.getDeadlineInfo(currentTask);
+  if (!info.isNear) return;
+
+  const user = Auth.getCurrentUser();
+  const isStaff = ['admin', 'manager'].includes(user?.role) && !isUserAssignee(currentTask, user);
+  const banner = document.createElement('div');
+  banner.id = 'task-deadline-reminder-banner';
+  banner.className = `deadline-warning-banner is-${info.urgency}`;
+  banner.innerHTML = `
+    <div class="deadline-warning-content">
+      <span class="deadline-warning-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      </span>
+      <div class="deadline-warning-text">
+        <strong>${escapeHtml(info.label)} (Hạn chót: ${escapeHtml(formatDate(currentTask.deadline))})</strong>
+        <span>${isStaff ? 'Công việc này sắp đến hạn hoàn thành. Gửi form nhắn nhắc nhở cho người phụ trách ngay.' : 'Công việc của bạn sắp đến hạn hoàn thành. Hãy cập nhật tiến độ hoặc gửi phản hồi nhanh.'}</span>
+      </div>
+    </div>
+    <button type="button" class="btn btn-primary btn-sm deadline-warning-btn" data-remind-task="${escapeHtml(currentTask.id)}">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg>
+      <span>${isStaff ? 'Gửi form nhắn nhắc hạn' : 'Gửi form báo tiến độ'}</span>
+    </button>
+  `;
+  document.querySelector('.task-detail-card .task-detail-badges')?.after(banner);
 }
 
 function setupRequestReview() {
@@ -175,7 +316,7 @@ function setupAssigneeActions() {
   const reopenButton = document.getElementById('reopen-task-button');
   const withdrawButton = document.getElementById('withdraw-cancellation-button');
   const user = Auth.getCurrentUser();
-  const isAssignee = ['user', 'manager'].includes(user?.role) && currentTask.assigneeId === user.id;
+  const isAssignee = isUserAssignee(currentTask, user);
   const isAdmin = user?.role === 'admin';
   if (!actions || !acceptButton || !cancelButton || !assignmentActions || !reportActions || !reopenButton || !withdrawButton) return;
   document.querySelector('.cancellation-pending-note')?.remove();
@@ -238,6 +379,13 @@ function setupTaskReports() {
   const input = document.getElementById('task-report-input');
   const fileInput = document.getElementById('task-report-file');
   const fileName = document.getElementById('task-report-file-name');
+  const fileRow = document.getElementById('task-report-file-row');
+  const setReportFileName = (text = '') => {
+    if (!fileName) return;
+    const hasFile = Boolean(text);
+    fileName.textContent = hasFile ? text : 'Chưa chọn tệp nào';
+    fileName.classList.toggle('has-file', hasFile);
+  };
   const reportLabel = form?.querySelector('label[for="task-report-input"]');
   const progressButton = document.getElementById('submit-progress-report');
   const completionButton = document.getElementById('submit-completion-report');
@@ -248,8 +396,8 @@ function setupTaskReports() {
   const user = Auth.getCurrentUser();
   const canReport = Auth.canReportTask(currentTask);
   const isAdmin = user?.role === 'admin';
-  const canUseAssignmentActions = ['user', 'manager'].includes(user?.role) && currentTask.assigneeId === user.id && currentTask.status === 'pending' && currentTask.cancellationRequest?.status !== 'pending';
-  const isAssignee = ['user', 'manager'].includes(user?.role) && currentTask.assigneeId === user.id;
+  const isAssignee = isUserAssignee(currentTask, user);
+  const canUseAssignmentActions = isAssignee && currentTask.status === 'pending' && currentTask.cancellationRequest?.status !== 'pending';
   const cancellationPending = currentTask.cancellationRequest?.status === 'pending';
   const hasPendingCompletionReport = (currentTask.reports || []).some(report => report.type === 'completion' && report.userId === user?.id && !report.review && !report.withdrawnAt);
   const canWithdrawCompletion = isAssignee && currentTask.status === 'awaiting-review' && !cancellationPending && hasPendingCompletionReport;
@@ -265,6 +413,7 @@ function setupTaskReports() {
   if (reportLabel) reportLabel.hidden = !canReport;
   if (input) input.hidden = !canReport;
   if (fileInput) fileInput.hidden = !canReport;
+  if (fileRow) fileRow.hidden = !canReport;
   if (fileName) fileName.hidden = !canReport;
   const fileLabel = form.querySelector('label[for="task-report-file"]');
   const fileHelp = document.getElementById('task-report-file-help');
@@ -309,22 +458,22 @@ function setupTaskReports() {
     fileInput.addEventListener('change', () => {
       const file = fileInput.files?.[0];
       if (!file) {
-        if (fileName) fileName.textContent = '';
+        setReportFileName('');
         return;
       }
       if (file.size > 25 * 1024 * 1024) {
         showToast('Tệp đính kèm không được vượt quá 25 MB.', 'warning');
         fileInput.value = '';
-        if (fileName) fileName.textContent = '';
+        setReportFileName('');
         return;
       }
-      if (isImageAttachment(file) && Auth.getCurrentUser()?.role !== 'user') {
-        showToast('Chỉ tài khoản người dùng mới được đính kèm ảnh.', 'warning');
+      if (isImageAttachment(file) && !['user', 'manager'].includes(Auth.getCurrentUser()?.role)) {
+        showToast('Chỉ tài khoản thực hiện công việc mới được đính kèm ảnh.', 'warning');
         fileInput.value = '';
-        if (fileName) fileName.textContent = '';
+        setReportFileName('');
         return;
       }
-      if (fileName) fileName.textContent = `${file.name} · ${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+      setReportFileName(`${file.name} · ${(file.size / (1024 * 1024)).toFixed(2)} MB`);
     });
     fileInput.dataset.handlerAttached = 'true';
   }
@@ -383,7 +532,7 @@ function setupTaskReports() {
     currentTask = Storage.getTaskById(currentTask.id);
     input.value = '';
     if (fileInput) fileInput.value = '';
-    if (fileName) fileName.textContent = '';
+    setReportFileName('');
     renderTaskDetail();
     showToast(isCompletion ? 'Đã gửi yêu cầu hoàn thành, chờ admin duyệt.' : 'Đã gửi báo cáo tiến độ', 'success');
   });
@@ -457,7 +606,7 @@ function setupDeadlineChange() {
   if (!form || !status) return;
   const user = Auth.getCurrentUser();
   const request = currentTask.deadlineChangeRequest;
-  const isAssignee = ['user', 'manager'].includes(user?.role) && currentTask.assigneeId === user.id;
+  const isAssignee = isUserAssignee(currentTask, user);
   form.hidden = !isAssignee || ['completed', 'cancelled'].includes(currentTask.status) || request?.status === 'pending';
   const dateInput = document.getElementById('requested-deadline');
   dateInput.min = new Date().toISOString().slice(0, 10);

@@ -1,4 +1,50 @@
-<!doctype html>
-<html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="referrer" content="no-referrer"><title>X&aacute;c minh email - TaskMaster</title><link rel="stylesheet" href="css/reset.css"><link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/responsive.css"></head>
-<body class="auth-page"><main class="auth-card"><div class="auth-brand"><span class="brand-icon">TM</span><span class="brand-text">Task<span>Master</span></span></div><h1>X&aacute;c minh email</h1><p id="verify-message" role="status">&#272;ang x&aacute;c minh email&hellip;</p><p class="auth-subtitle"><a href="account.html">Quay l&#7841;i t&agrave;i kho&#7843;n</a></p></main><script type="module" src="js/verify-email.js"></script>  <script type="module" src="js/theme.js"></script>
-</body></html>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
+  <title>Xác minh email - TaskMaster</title>
+  <script>try{const root=document.documentElement;root.dataset.theme=localStorage.getItem('DACK_THEME')==='dark'?'dark':'light';root.dataset.sidebarCollapsed=localStorage.getItem('DACK_SIDEBAR_HIDDEN')==='true'?'true':'false'}catch{document.documentElement.dataset.theme='light';document.documentElement.dataset.sidebarCollapsed='false'}</script>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="icon" type="image/png" href="image/favicon-light.png?v=5">
+</head>
+<body class="auth-page">
+  <main class="auth-card auth-card-wide">
+    <div class="auth-brand">
+      <span class="global-brand-mark"><img src="assets/taskmaster-logo-light.png?v=5" alt="TaskMaster"></span>
+      <span class="brand-text">Task<span>Master</span></span>
+    </div>
+    <p class="eyebrow">BẢO MẬT TÀI KHOẢN</p>
+    <h1>Xác minh địa chỉ Email</h1>
+    <div id="verify-message" class="auth-alert is-info" role="status">Đang kiểm tra thông tin xác minh&hellip;</div>
+
+    <form id="verify-otp-form" class="otp-entry-card" hidden>
+      <div class="otp-entry-header">
+        <label class="form-label" for="verify-code-input">Mã xác thực OTP (6 chữ số)</label>
+        <span class="otp-entry-hint">Hiệu lực 5 phút</span>
+      </div>
+      <input id="verify-code-input" name="code" type="hidden" value="">
+      <div class="otp-pin-grid" data-otp-group="verify-page">
+        <input type="text" class="otp-digit-box" inputmode="numeric" maxlength="1" pattern="[0-9]" aria-label="Chữ số OTP 1" autocomplete="one-time-code">
+        <input type="text" class="otp-digit-box" inputmode="numeric" maxlength="1" pattern="[0-9]" aria-label="Chữ số OTP 2">
+        <input type="text" class="otp-digit-box" inputmode="numeric" maxlength="1" pattern="[0-9]" aria-label="Chữ số OTP 3">
+        <span class="otp-pin-sep" aria-hidden="true">&ndash;</span>
+        <input type="text" class="otp-digit-box" inputmode="numeric" maxlength="1" pattern="[0-9]" aria-label="Chữ số OTP 4">
+        <input type="text" class="otp-digit-box" inputmode="numeric" maxlength="1" pattern="[0-9]" aria-label="Chữ số OTP 5">
+        <input type="text" class="otp-digit-box" inputmode="numeric" maxlength="1" pattern="[0-9]" aria-label="Chữ số OTP 6">
+      </div>
+      <button class="btn btn-primary auth-submit otp-confirm-btn" type="submit" id="verify-otp-submit">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+        <span>Xác nhận mã OTP</span>
+      </button>
+    </form>
+
+    <p class="auth-subtitle"><a href="account.html">&larr; Quay lại trang Tài khoản</a> &middot; <a href="index.html">Về Dashboard</a></p>
+  </main>
+  <script type="module" src="js/verify-email.js"></script>
+  <script type="module" src="js/theme.js"></script>
+</body>
+</html>

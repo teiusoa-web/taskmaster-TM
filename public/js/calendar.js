@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function renderWeek() {
-  const user = Auth.getCurrentUser();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const monday = new Date(today);
@@ -25,7 +24,7 @@ function renderWeek() {
   });
   document.getElementById('week-label').textContent = `${formatShortDate(days[0])} – ${formatShortDate(days[6])}`;
 
-  const tasks = Storage.getTasks().filter(task => task.assigneeId === user?.id);
+  const tasks = Storage.getTasks();
   const calendar = document.getElementById('week-calendar');
   calendar.innerHTML = days.map(date => {
     const key = toDateKey(date);

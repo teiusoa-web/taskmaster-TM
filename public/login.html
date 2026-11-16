@@ -1,4 +1,152 @@
 <!DOCTYPE html>
-<html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Đăng nhập - TaskMaster</title><link rel="stylesheet" href="css/reset.css"><link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/responsive.css"></head>
-<body class="auth-page"><main class="auth-card"><div class="auth-brand"><span class="brand-icon">T</span><span class="brand-text">Task<span>Master</span></span></div><p class="eyebrow">QUẢN LÝ CÔNG VIỆC</p><h1>Đăng nhập</h1><p class="auth-subtitle">Đăng nhập để tiếp tục làm việc.</p><form id="login-form"><div class="form-group"><label class="form-label" for="username">Tên đăng nhập hoặc email</label><input class="form-control" id="username" name="username" autocomplete="username" required></div><div class="form-group"><label class="form-label" for="password">Mật khẩu</label><input class="form-control" id="password" name="password" type="password" autocomplete="current-password" required></div><p id="login-error" class="login-error" role="alert"></p><button class="btn btn-primary auth-submit" type="submit">Đăng nhập</button></form><p class="auth-subtitle"><a href="forgot-password.html">Quên mật khẩu?</a></p></main><script type="module" src="js/login.js"></script>  <script type="module" src="js/theme.js"></script>
-</body></html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập - TaskMaster</title>
+  <script>try{const root=document.documentElement;root.dataset.theme=localStorage.getItem('DACK_THEME')==='dark'?'dark':'light';root.dataset.sidebarCollapsed=localStorage.getItem('DACK_SIDEBAR_HIDDEN')==='true'?'true':'false'}catch{document.documentElement.dataset.theme='light';document.documentElement.dataset.sidebarCollapsed='false'}</script>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="icon" type="image/png" href="image/favicon-light.png?v=5">
+</head>
+<body class="auth-page auth-split-page">
+  <div class="auth-split-shell">
+    <!-- Cột trái: Form đăng nhập -->
+    <main class="auth-form-pane">
+      <div class="auth-form-inner">
+        <div class="auth-brand-row">
+          <div class="auth-brand">
+            <span class="global-brand-mark"><img src="assets/taskmaster-logo-light.png?v=5" alt="" draggable="false"></span>
+            <span class="brand-text">Task<span>Master</span></span>
+          </div>
+          <span class="auth-version-pill">Workspace</span>
+        </div>
+
+        <header class="auth-heading-block">
+          <p class="eyebrow">QUẢN LÝ CÔNG VIỆC DOANH NGHIỆP</p>
+          <h1>Chào mừng trở lại</h1>
+          <p class="auth-subtitle">Đăng nhập để điều phối công việc, tiến độ nhóm và lịch biểu của bạn.</p>
+        </header>
+
+        <form id="login-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="username">Tên đăng nhập hoặc email</label>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </span>
+              <input class="form-control" id="username" name="username" placeholder="Nhập tên đăng nhập hoặc email công việc" autocomplete="username" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="auth-password-label-row">
+              <label class="form-label" for="password">Mật khẩu</label>
+              <a href="forgot-password.html" class="auth-forgot-link">Quên mật khẩu?</a>
+            </div>
+            <div class="auth-input-wrap has-toggle">
+              <span class="auth-input-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </span>
+              <input class="form-control" id="password" name="password" type="password" placeholder="Nhập mật khẩu của bạn" autocomplete="current-password" required>
+              <button type="button" id="toggle-password-btn" class="auth-password-toggle" aria-label="Hiện mật khẩu" aria-pressed="false">
+                <svg class="eye-open-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="eye-closed-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <p id="login-error" class="login-error" role="alert"></p>
+
+          <button class="btn btn-primary auth-submit" id="login-submit-btn" type="submit">
+            <span id="login-submit-label">Đăng nhập</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+        </form>
+
+        <footer class="auth-security-foot">
+          <span>RBAC 3 vai trò</span>
+          <span aria-hidden="true">&bull;</span>
+          <span>Tìm nhanh Ctrl + K</span>
+          <span aria-hidden="true">&bull;</span>
+          <span>Nhắc hạn tự động</span>
+        </footer>
+      </div>
+    </main>
+
+    <!-- Cột phải: Product Showcase kiểu Linear / Notion / Asana -->
+    <aside class="auth-showcase-pane" aria-hidden="true">
+      <div class="auth-showcase-backdrop"></div>
+      <div class="auth-showcase-content">
+        <div class="auth-showcase-badge">
+          <span class="auth-live-pulse"></span>
+          <span>Không gian cộng tác thời gian thực</span>
+        </div>
+        <h2 class="auth-showcase-headline">Mọi đầu việc, tiến độ và lịch hạn trên một dòng chảy duy nhất.</h2>
+        <p class="auth-showcase-desc">Từ bảng Kanban trực quan, phân công nhóm phối hợp đến quy trình duyệt báo cáo và cảnh báo sắp đến hạn.</p>
+
+        <div class="auth-preview-window" aria-hidden="true">
+          <div class="auth-preview-topbar">
+            <div class="auth-preview-dots">
+              <span></span><span></span><span></span>
+            </div>
+            <span class="auth-lock-pill">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span>Không gian làm việc được bảo vệ</span>
+            </span>
+            <kbd class="auth-preview-kbd">Ctrl K</kbd>
+          </div>
+
+          <div class="auth-preview-cards">
+            <div class="auth-preview-task">
+              <div class="auth-preview-task-top">
+                <span class="auth-preview-cat is-indigo">Quy trình</span>
+                <span class="badge badge-status-in-progress">Thiết lập</span>
+              </div>
+              <strong>1. Khởi tạo &amp; Phân công</strong>
+              <div class="auth-wire-row">
+                <span class="auth-wire-bar w-lg is-accent"></span>
+                <span class="auth-wire-bar w-sm"></span>
+              </div>
+            </div>
+
+            <div class="auth-preview-task">
+              <div class="auth-preview-task-top">
+                <span class="auth-preview-cat is-amber">Cộng tác</span>
+                <span class="badge badge-status-awaiting-review">Theo dõi</span>
+              </div>
+              <strong>2. Thực thi &amp; Checklist</strong>
+              <div class="auth-wire-row">
+                <span class="auth-wire-bar w-md is-accent"></span>
+                <span class="auth-wire-bar w-sm"></span>
+              </div>
+            </div>
+
+            <div class="auth-preview-task is-subtle">
+              <div class="auth-preview-task-top">
+                <span class="auth-preview-cat is-teal">Kiểm soát</span>
+                <span class="badge badge-status-completed">Hoàn tất</span>
+              </div>
+              <strong>3. Nghiệm thu &amp; Duyệt kết quả</strong>
+              <div class="auth-wire-row">
+                <span class="auth-wire-bar w-md"></span>
+                <span class="auth-wire-bar w-sm"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="auth-showcase-highlights">
+          <div class="auth-highlight-pill">Phân quyền 3 cấp rõ ràng</div>
+          <div class="auth-highlight-pill">Checklist kéo thả &amp; trao đổi</div>
+          <div class="auth-highlight-pill">Nhắc hạn Email + In-App</div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script type="module" src="js/login.js"></script>
+  <script type="module" src="js/theme.js"></script>
+</body>
+</html>

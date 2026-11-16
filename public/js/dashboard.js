@@ -1,19 +1,67 @@
 // dashboard.js - Xử lý tính toán KPI, biểu đồ thống kê bằng Array Methods (reduce, filter, map)
 import { Storage } from './storage.js';
-import { formatDate, getStatusMeta, getPriorityMeta, isOverdue } from './utils.js';
+import { formatDate, getStatusMeta, getPriorityMeta, isOverdue, getTaskProgress, renderAvatarStackHtml } from './utils.js';
 import { Auth } from './auth.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  await Storage.init();
-  renderRoleWelcome();
+  renderDashboardSkeleton();
+  const usersPromise = Auth.loadUsers().then(() => renderRoleWelcome());
+  await Promise.all([
+    usersPromise,
+    Storage.init(),
+    new Promise(resolve => setTimeout(resolve, 450))
+  ]);
   renderDashboardStats();
   const tasks = getDashboardTasks();
   renderUpcomingTasks(tasks);
   renderCancelledTasks(tasks);
 });
 
+function renderDashboardSkeleton() {
+  const statIds = ['stat-total', 'stat-in-progress', 'stat-completed', 'stat-awaiting-review', 'stat-needs-revision', 'stat-overdue', 'stat-cancelled'];
+  statIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = '<span class="skeleton-shimmer" style="display:inline-block;width:32px;height:24px;border-radius:6px;vertical-align:middle;"></span>';
+  });
+
+  const healthCard = document.getElementById('dashboard-health-bar-card');
+  if (healthCard) {
+    healthCard.innerHTML = `
+      <div class="project-health-skeleton">
+        <div class="skeleton-shimmer skeleton-text w-35" style="height:16px;"></div>
+        <div class="skeleton-shimmer skeleton-pill" style="width:100%;height:12px;border-radius:999px;margin:12px 0;"></div>
+        <div class="skeleton-shimmer skeleton-text w-65" style="height:13px;"></div>
+      </div>
+    `;
+  }
+
+  const upcomingContainer = document.getElementById('upcoming-tasks-list');
+  if (upcomingContainer) {
+    upcomingContainer.innerHTML = Array.from({ length: 3 }).map(() => `
+      <tr class="skeleton-table-row">
+        <td>
+          <div class="skeleton-cell-flow">
+            <div class="skeleton-shimmer skeleton-text w-80" style="height: 16px;"></div>
+            <div class="skeleton-shimmer skeleton-text w-50" style="height: 12px; margin-top: 4px;"></div>
+          </div>
+        </td>
+        <td><div class="skeleton-shimmer skeleton-pill" style="width: 75px; height: 22px;"></div></td>
+        <td><div class="skeleton-shimmer skeleton-pill" style="width: 85px; height: 22px;"></div></td>
+        <td><div class="skeleton-shimmer skeleton-pill" style="width: 90px; height: 8px; border-radius: 999px;"></div></td>
+        <td><div class="skeleton-shimmer skeleton-pill" style="width: 80px; height: 22px;"></div></td>
+      </tr>
+    `).join('');
+  }
+}
+
 function getDashboardTasks() {
   return Auth.getTasks(Storage.getTasks());
+}
+
+function getVietnameseGreeting(hour = new Date().getHours()) {
+  if (hour < 12) return 'Chào buổi sáng';
+  if (hour < 18) return 'Chào buổi chiều';
+  return 'Chào buổi tối';
 }
 
 function renderRoleWelcome() {
@@ -25,9 +73,18 @@ function renderRoleWelcome() {
     admin: ['Trung t\u00e2m qu\u1ea3n tr\u1ecb', 'Theo d\u00f5i t\u1ed5ng quan c\u00f4ng vi\u1ec7c, duy\u1ec7t b\u00e1o c\u00e1o v\u00e0 qu\u1ea3n l\u00fd t\u00e0i kho\u1ea3n.'],
     manager: ['Công việc bạn phụ trách', 'Theo dõi việc bạn tạo hoặc được giao, và cập nhật tiến độ nhóm.'],
     user: ['Công việc của bạn', 'Theo dõi việc được giao và gửi báo cáo tiến độ cho quản lý.']
-  }[user.role];
-  title.textContent = copy[0];
-  description.textContent = copy[1];
+  }[user.role] || ['Công việc của bạn', 'Theo dõi tiến độ công việc được giao mỗi ngày.'];
+  const greeting = getVietnameseGreeting();
+  const displayName = user.name || user.username || '';
+  const todayFormatted = new Intl.DateTimeFormat('vi-VN', {
+    weekday: 'long',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  }).format(new Date());
+  const dateLabel = todayFormatted.charAt(0).toUpperCase() + todayFormatted.slice(1);
+  title.textContent = displayName ? `${greeting}, ${displayName}` : copy[0];
+  description.textContent = `${dateLabel} • ${copy[1]}`;
   const adminActions = document.getElementById('admin-quick-actions');
   if (adminActions) adminActions.hidden = user.role !== 'admin';
   if (user.role === 'admin') {
@@ -79,8 +136,92 @@ function renderDashboardStats() {
   if (awaitingReviewElem) awaitingReviewElem.textContent = awaitingReviewTasks;
   if (needsRevisionElem) needsRevisionElem.textContent = needsRevisionTasks;
 
-  // Render thanh thống kê danh mục công việc
+  // Render thanh sức khỏe dự án đa phân đoạn & thống kê danh mục công việc
+  renderProjectHealthBar(tasks, {
+    totalTasks,
+    completedTasks,
+    awaitingReviewTasks,
+    inProgressTasks,
+    needsRevisionTasks,
+    pendingTasks,
+    cancelledTasks,
+    overdueTasks,
+    completionRate
+  });
   renderCategoryProgress(tasks);
+}
+
+function renderProjectHealthBar(tasks, counts) {
+  const card = document.getElementById('dashboard-health-bar-card');
+  if (!card) return;
+
+  const {
+    totalTasks,
+    completedTasks,
+    awaitingReviewTasks,
+    inProgressTasks,
+    needsRevisionTasks,
+    pendingTasks,
+    cancelledTasks,
+    overdueTasks,
+    completionRate
+  } = counts;
+
+  const segments = [
+    { key: 'completed', label: 'Hoàn thành', count: completedTasks, tone: 'is-completed' },
+    { key: 'awaiting-review', label: 'Chờ duyệt', count: awaitingReviewTasks, tone: 'is-review' },
+    { key: 'in-progress', label: 'Đang làm', count: inProgressTasks, tone: 'is-progress' },
+    { key: 'needs-revision', label: 'Cần sửa lại', count: needsRevisionTasks, tone: 'is-revision' },
+    { key: 'pending', label: 'Chờ xử lý', count: pendingTasks, tone: 'is-pending' },
+    { key: 'cancelled', label: 'Đã hủy', count: cancelledTasks, tone: 'is-cancelled' }
+  ];
+  const otherCount = Math.max(0, totalTasks - segments.reduce((sum, s) => sum + s.count, 0));
+  if (otherCount > 0) {
+    segments[4].count += otherCount;
+  }
+
+  const barHtml = totalTasks > 0
+    ? segments
+        .filter(seg => seg.count > 0)
+        .map(seg => {
+          const pct = ((seg.count / totalTasks) * 100).toFixed(2);
+          return `<span class="project-health-segment ${seg.tone}" style="width:${pct}%" title="${seg.label}: ${seg.count} (${Math.round((seg.count / totalTasks) * 100)}%)" aria-label="${seg.label} ${seg.count} công việc"></span>`;
+        })
+        .join('')
+    : '<span class="project-health-segment is-empty" style="width:100%"></span>';
+
+  const legendHtml = segments
+    .filter(seg => seg.count > 0 || seg.key === 'completed' || seg.key === 'in-progress')
+    .map(seg => {
+      const pct = totalTasks > 0 ? Math.round((seg.count / totalTasks) * 100) : 0;
+      return `
+        <span class="project-health-legend-item">
+          <span class="project-health-dot ${seg.tone}" aria-hidden="true"></span>
+          <span>${seg.label}</span>
+          <strong>${seg.count}</strong>
+          <small>(${pct}%)</small>
+        </span>`;
+    })
+    .join('');
+
+  card.innerHTML = `
+    <div class="project-health-header content-loaded-fade">
+      <div>
+        <h2 class="project-health-title">Sức khỏe tiến độ hệ thống</h2>
+        <p class="project-health-subtitle">${totalTasks > 0 ? `Tổng hợp phân bổ ${totalTasks} công việc theo trạng thái xử lý` : 'Chưa có công việc nào được ghi nhận trong không gian này'}</p>
+      </div>
+      <div class="project-health-badges">
+        <span class="project-health-rate-pill">${completionRate}% hoàn thành</span>
+        ${overdueTasks > 0 ? `<a href="tasks.html?overdue=1" class="project-health-overdue-pill">${overdueTasks} quá hạn</a>` : ''}
+      </div>
+    </div>
+    <div class="project-health-track content-loaded-fade" role="img" aria-label="Biểu đồ thanh tiến độ ${totalTasks} công việc">
+      ${barHtml}
+    </div>
+    <div class="project-health-legend content-loaded-fade">
+      ${legendHtml}
+    </div>
+  `;
 }
 
 function renderCancelledTasks(tasks) {
@@ -88,7 +229,7 @@ function renderCancelledTasks(tasks) {
   if (!tbody) return;
   const cancelled = tasks.filter(task => task.status === 'cancelled');
   if (!cancelled.length) {
-    tbody.innerHTML = '<tr><td colspan="4" class="text-center">Chưa có công việc bị hủy.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="3" class="text-center">Chưa có công việc bị hủy.</td></tr>';
     return;
   }
   const users = Auth.getUsers();
@@ -96,8 +237,8 @@ function renderCancelledTasks(tasks) {
     .sort((a, b) => new Date(b.cancelledAt || b.updatedAt || b.createdAt || 0) - new Date(a.cancelledAt || a.updatedAt || a.createdAt || 0))
     .slice(0, 5)
     .map(task => {
-      const assignee = users.find(user => user.id === task.assigneeId);
-      return `<tr><td><a class="task-title-cell" href="task-detail.html?id=${encodeURIComponent(task.id)}">${escapeHtml(task.title)}</a></td><td>${escapeHtml(assignee?.name || 'Chưa phân công')}</td><td>${formatDate(task.deadline)}</td><td><a class="btn btn-secondary btn-sm" href="task-detail.html?id=${encodeURIComponent(task.id)}">Chi tiết</a></td></tr>`;
+      const assigneeHtml = renderAvatarStackHtml(task, users, { compact: false });
+      return `<tr><td><a class="task-title-cell" href="task-detail.html?id=${encodeURIComponent(task.id)}">${escapeHtml(task.title)}</a></td><td>${assigneeHtml}</td><td>${formatDate(task.deadline)}</td></tr>`;
     }).join('');
 }
 
@@ -139,11 +280,14 @@ function renderCategoryProgress(tasks) {
     const pending = total - completed - inProgress;
     const percent = Math.round(completed / total * 100);
     const name = escapeHtml(category.name);
-    const color = /^#[0-9a-f]{3,8}$/i.test(category.color || '') ? category.color : 'var(--primary)';
+    const rawColor = String(category.color || '').trim();
+    const chipColor = /^#[0-9a-f]{3}$/i.test(rawColor)
+      ? `#${rawColor[1]}${rawColor[1]}${rawColor[2]}${rawColor[2]}${rawColor[3]}${rawColor[3]}`
+      : (/^#[0-9a-f]{6}$/i.test(rawColor) ? rawColor : '#6366f1');
     return `<article class="category-progress-card">
-      <div class="category-progress-heading"><h3>${name}</h3><span>${total} c\u00f4ng vi\u1ec7c</span></div>
+      <div class="category-progress-heading"><h3><span class="task-category-chip" style="border-color: ${chipColor}44; background: ${chipColor}14;"><span class="cat-preview-dot" style="background: ${chipColor};"></span><strong>${name}</strong></span></h3><span>${total} c\u00f4ng vi\u1ec7c</span></div>
       <div class="category-progress-counts"><span>Ho\u00e0n th\u00e0nh <strong>${completed}</strong></span><span>\u0110ang l\u00e0m <strong>${inProgress}</strong></span><span>Ch\u1edd x\u1eed l\u00fd <strong>${pending}</strong></span></div>
-      <div class="category-progress-track" role="progressbar" aria-label="Ti\u1ebfn \u0111\u1ed9 ${name}" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100"><span style="width:${percent}%;background:${color}"></span></div>
+      <div class="category-progress-track" role="progressbar" aria-label="Ti\u1ebfn \u0111\u1ed9 ${name}" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100"><span style="width:${percent}%;background:${chipColor}"></span></div>
       <small>${percent}% ho\u00e0n th\u00e0nh</small>
     </article>`;
   }).join('');
@@ -189,18 +333,25 @@ function renderUpcomingTasks(tasks) {
     return;
   }
 
+  const users = Auth.getUsers();
   const html = pendingTasks.map(task => {
     const statusMeta = getStatusMeta(task.status);
     const priorityMeta = getPriorityMeta(task.priority);
     const overdue = isOverdue(task.deadline, task.status);
+    const progress = getTaskProgress(task);
+    const assigneeStackHtml = renderAvatarStackHtml(task, users, { compact: false });
+    const descPreview = task.description
+      ? `${escapeHtml(task.description.substring(0, 50))}${task.description.length > 50 ? '...' : ''}`
+      : '';
 
     return `
       <tr>
         <td>
-          <a href="task-detail.html?id=${task.id}" class="task-title-cell" style="color: var(--primary);">
-            ${task.title}
+          <a href="task-detail.html?id=${encodeURIComponent(task.id)}" class="task-title-cell" style="color: var(--primary);">
+            ${escapeHtml(task.title)}
           </a>
-          <span class="task-desc-sub">${task.description ? task.description.substring(0, 50) + '...' : ''}</span>
+          ${descPreview ? `<span class="task-desc-sub">${descPreview}</span>` : ''}
+          <div class="dashboard-task-assignees">${assigneeStackHtml}</div>
         </td>
         <td>
           <span class="badge ${priorityMeta.className}">${priorityMeta.label}</span>
@@ -210,11 +361,9 @@ function renderUpcomingTasks(tasks) {
             ${formatDate(task.deadline)} ${overdue ? '(Quá hạn)' : ''}
           </span>
         </td>
+        <td><div class="task-row-progress" role="progressbar" aria-label="Tiến độ công việc ${escapeHtml(task.title)}" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100"><strong>${progress}%</strong><span class="task-row-progress-track"><span style="width:${progress}%"></span></span></div></td>
         <td>
           <span class="badge ${statusMeta.className}">${statusMeta.label}</span>
-        </td>
-        <td>
-          <a href="task-detail.html?id=${task.id}" class="btn btn-secondary btn-sm">Chi tiết</a>
         </td>
       </tr>
     `;

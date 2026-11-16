@@ -56,8 +56,8 @@ async function availablePort(start) {
   throw new Error('No available port found for TaskMaster.');
 }
 
-function launch(command, args, extraEnv = {}) {
-  const child = spawn(command, args, { stdio: 'inherit', cwd: process.cwd(), env: { ...process.env, ...extraEnv } });
+function launch(command, args, extraEnv = {}, cwd = process.cwd()) {
+  const child = spawn(command, args, { stdio: 'inherit', cwd, env: { ...process.env, ...extraEnv } });
   child.once('error', error => console.error('Could not start TaskMaster service:', error.message));
   return child;
 }
@@ -80,7 +80,7 @@ async function waitForService(check, child = null, attempts = 35) {
   return false;
 }
 
-async function ensureService(startPort, check, command, args, extraEnv = {}) {
+async function ensureService(startPort, check, command, args, extraEnv = {}, cwd = process.cwd()) {
   let port = startPort;
   for (let attempt = 0; attempt < 10; attempt += 1) {
     if (!(await canBind(port))) {
@@ -92,7 +92,7 @@ async function ensureService(startPort, check, command, args, extraEnv = {}) {
       continue;
     }
 
-    const child = launch(command(port), args(port), extraEnv(port));
+    const child = launch(command(port), args(port), extraEnv(port), cwd);
     if (await waitForService(() => check(port), child)) {
       monitor(child);
       return port;
@@ -159,8 +159,9 @@ async function start() {
     preferredApiPort,
     servesApi,
     () => process.execPath,
-    port => [require.resolve('json-server/lib/bin.js'), 'data/database.json', '--port', String(port)],
-    () => ({})
+    port => [require.resolve('json-server/lib/bin.js'), path.join(process.cwd(), 'data', 'database.json'), '--port', String(port)],
+    () => ({}),
+    path.join(process.cwd(), 'data')
   );
   const uploadPort = await ensureService(
     preferredUploadPort,

@@ -4,9 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chi Tiết Công Việc - TaskMaster</title>
+  <script>try{const root=document.documentElement;root.dataset.theme=localStorage.getItem('DACK_THEME')==='dark'?'dark':'light';root.dataset.sidebarCollapsed=localStorage.getItem('DACK_SIDEBAR_HIDDEN')==='true'?'true':'false'}catch{document.documentElement.dataset.theme='light';document.documentElement.dataset.sidebarCollapsed='false'}</script>
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <link rel="icon" type="image/png" href="image/favicon-light.png?v=5">
 </head>
 <body class="auth-pending">
   <div class="app-container">
@@ -18,22 +20,25 @@
       </div>
 
       <nav class="sidebar-nav">
-        <a href="index.html" class="nav-link">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-          Dashboard Thống Kê
-        </a>
-        <a href="tasks.html" class="nav-link active">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-          Danh sách công việc
-        </a>
-        <a href="task-form.html" class="nav-link">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-          Thêm mới công việc
-        </a>
-        <a href="categories.html" class="nav-link">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-          Quản lý danh mục
-        </a>
+        <div class="sidebar-nav-group">
+          <span class="sidebar-group-label">Tổng quan &amp; Công việc</span>
+          <a href="index.html" class="nav-link" aria-label="Dashboard Thống kê">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10.5 12 3l9 7.5M5.25 9v11h13.5V9M9 20v-6h6v6"/></svg>
+            <span class="nav-link-label">Dashboard Thống kê</span>
+          </a>
+          <a href="tasks.html" class="nav-link active" aria-label="Danh sách công việc">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+            <span class="nav-link-label">Danh sách công việc</span>
+          </a>
+          <a href="my-tasks.html" class="nav-link" aria-label="Việc của tôi">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2m8-10a4 4 0 100-8 4 4 0 000 8z"/></svg>
+            <span class="nav-link-label">Việc của tôi</span>
+          </a>
+          <a href="my-calendar.html" class="nav-link" aria-label="Lịch tuần">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 012 2v14H3V6a2 2 0 012-2z"/></svg>
+            <span class="nav-link-label">Lịch tuần</span>
+          </a>
+        </div>
       </nav>
 
       <div class="sidebar-footer">
@@ -66,6 +71,7 @@
             <div class="task-detail-heading">
               <h2 id="detail-title" style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); line-height: 1.3;">Đang tải...</h2>
               <div class="task-detail-management-actions">
+                <a id="btn-duplicate-task" href="#" class="btn btn-secondary btn-sm">Nhân bản</a>
                 <a id="btn-edit-link" href="#" class="btn btn-secondary btn-sm">Chỉnh sửa</a>
                 <button id="btn-delete-task" class="btn btn-danger btn-sm">Xóa việc</button>
               </div>
@@ -74,9 +80,9 @@
             <div class="task-detail-badges">
               <span id="detail-status" class="badge">Trạng thái</span>
               <span id="detail-priority" class="badge">Ưu tiên</span>
-              <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">
-                <span id="detail-category-badge" style="width: 10px; height: 10px; border-radius: 50%;"></span>
-                <span id="detail-category">Danh mục</span>
+              <span id="detail-category-chip" class="task-category-chip">
+                <span id="detail-category-badge" class="cat-preview-dot"></span>
+                <strong id="detail-category">Danh mục</strong>
               </span>
               <div id="assignee-task-actions" class="assignee-task-actions" hidden>
                 <button type="button" id="reopen-task-button" class="btn btn-primary btn-sm" hidden>Mở lại công việc</button>
@@ -87,6 +93,10 @@
             <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-bottom: 20px;">
               <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase;">Mô tả</h3>
               <p id="detail-desc" style="font-size: 0.95rem; line-height: 1.7; color: var(--text-primary); white-space: pre-wrap;"></p>
+              <div id="detail-attachments-section" class="detail-attachments-section" hidden>
+                <h4 class="detail-attachments-title">Tài liệu &amp; Liên kết đính kèm</h4>
+                <div id="detail-attachments-list" class="task-attachments-list"></div>
+              </div>
             </div>
 
             <!-- Metadata info -->
@@ -100,7 +110,7 @@
                 <strong id="detail-created" style="font-size: 0.95rem;">-</strong>
               </div>
               <div>
-                <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Ng&#432;&#7901;i nh&#7853;n</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Người nhận</span>
                 <div id="detail-assignee" class="task-assignee"></div>
               </div>
             </div>
@@ -108,26 +118,26 @@
 
           <section class="card task-detail-card checklist-card">
             <div class="checklist-card-header">
-              <div><p class="eyebrow">C&#193;C B&#431;&#7898;C TH&#7920;C HI&#7878;N</p><h3>Checklist c&#244;ng vi&#7879;c</h3><p>Ho&#224;n th&#224;nh t&#7915;ng m&#7909;c v&#224; trao &#273;&#7893;i ngay trong m&#7909;c &#273;&#243;.</p></div>
-              <span id="subtasks-progress" class="badge checklist-progress">0/0 m&#7909;c</span>
+              <div><p class="eyebrow">CÁC BƯỚC THỰC HIỆN</p><h3>Checklist công việc</h3><p>Hoàn thành từng mục và trao đổi ngay trong mục đó.</p></div>
+              <span id="subtasks-progress" class="badge checklist-progress">0/0 mục</span>
             </div>
             <div id="subtasks-container"></div>
             <form id="add-subtask-form" class="add-subtask-form">
-              <input type="text" id="new-subtask-input" class="form-control" maxlength="180" placeholder="Th&#234;m m&#7909;c checklist..." required>
-              <button type="submit" class="btn btn-secondary btn-sm">+ Th&#234;m m&#7909;c</button>
+              <input type="text" id="new-subtask-input" class="form-control" maxlength="180" placeholder="Thêm mục checklist..." required>
+              <button type="submit" class="btn btn-secondary btn-sm">+ Thêm mục</button>
             </form>
           </section>
           <section class="card task-detail-card" id="task-activity-card"><h3>Hoạt động gần đây</h3><div id="task-activity-list" class="task-activity-list"></div></section>
           <section class="card task-detail-card" id="task-comments-card">
-            <h3>Trao &#273;&#7893;i c&#244;ng vi&#7879;c</h3>
-            <form id="task-comment-form" class="task-report-form"><label class="form-label" for="task-comment-input">Vi&#7871;t c&#226;u h&#7887;i ho&#7863;c c&#7853;p nh&#7853;t</label><textarea id="task-comment-input" class="form-control" rows="3" maxlength="2000" required></textarea><button class="btn btn-primary" type="submit">G&#7917;i trao &#273;&#7893;i</button></form>
+            <h3>Trao đổi công việc</h3>
+            <form id="task-comment-form" class="task-report-form"><label class="form-label" for="task-comment-input">Viết câu hỏi hoặc cập nhật</label><textarea id="task-comment-input" class="form-control" rows="3" maxlength="2000" required></textarea><button class="btn btn-primary" type="submit">Gửi trao đổi</button></form>
             <div id="task-comments-list" class="task-comments-list"></div>
           </section>
           <section class="card task-detail-card" id="deadline-change-card">
-            <h3>Y&#234;u c&#7847;u &#273;&#7893;i h&#7841;n ch&#243;t</h3>
+            <h3>Yêu cầu đổi hạn chót</h3>
             <p id="deadline-change-status" class="text-muted"></p>
-            <form id="deadline-change-form" class="task-report-form" hidden><label class="form-label" for="requested-deadline">H&#7841;n ch&#243;t m&#7899;i</label><input id="requested-deadline" class="form-control" type="date" required><label class="form-label" for="deadline-change-reason">L&#253; do</label><textarea id="deadline-change-reason" class="form-control" rows="3" maxlength="1000" required></textarea><button class="btn btn-secondary" type="submit">G&#7917;i y&#234;u c&#7847;u</button></form>
-            <div id="deadline-change-review" hidden><label class="form-label" for="deadline-review-comment">Ph&#7843;n h&#7891;i admin (kh&#244;ng b&#7855;t bu&#7897;c)</label><textarea id="deadline-review-comment" class="form-control" rows="2" maxlength="1000"></textarea><div class="report-review-actions"><button type="button" class="btn btn-primary" data-deadline-decision="approved">Duy&#7879;t h&#7841;n m&#7899;i</button><button type="button" class="btn btn-secondary" data-deadline-decision="rejected">T&#7915; ch&#7889;i</button></div></div>
+            <form id="deadline-change-form" class="task-report-form" hidden><label class="form-label" for="requested-deadline">Hạn chót mới</label><input id="requested-deadline" class="form-control" type="date" required><label class="form-label" for="deadline-change-reason">Lý do</label><textarea id="deadline-change-reason" class="form-control" rows="3" maxlength="1000" required></textarea><button class="btn btn-secondary" type="submit">Gửi yêu cầu</button></form>
+            <div id="deadline-change-review" hidden><label class="form-label" for="deadline-review-comment">Phản hồi admin (không bắt buộc)</label><textarea id="deadline-review-comment" class="form-control" rows="2" maxlength="1000"></textarea><div class="report-review-actions"><button type="button" class="btn btn-primary" data-deadline-decision="approved">Duyệt hạn mới</button><button type="button" class="btn btn-secondary" data-deadline-decision="rejected">Từ chối</button></div></div>
           </section>          <section class="card task-detail-card" id="task-reports-card" hidden>
             <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:14px">Báo cáo tiến độ công việc</h3>
             <div id="task-reports-list" class="task-reports-list"></div>
@@ -135,16 +145,25 @@
             <form id="task-report-form" class="task-report-form" hidden>
               <label for="task-report-input" class="form-label">Mô tả tiến độ, kết quả hoặc khó khăn</label>
               <textarea id="task-report-input" class="form-control" rows="4" maxlength="2000" placeholder="Báo cáo kết quả thực hiện công việc..."></textarea>
-              <label for="task-report-file" class="form-label">Tệp đính kèm (tối đa 25 MB)</label>
-              <input id="task-report-file" class="form-control" type="file" aria-describedby="task-report-file-help">
-              <small id="task-report-file-help" class="text-muted">Mỗi tệp tối đa 25 MB. Chỉ tài khoản người dùng được đính kèm ảnh.</small>
-              <p id="task-report-file-name" class="text-muted" aria-live="polite"></p>
+              <div class="field-label-row" style="margin-bottom: 4px;">
+                <span class="label-with-tip">
+                  <label for="task-report-file" class="form-label" style="margin-bottom: 0;">Tệp đính kèm</label>
+                  <span id="task-report-file-help" class="field-info-tip" tabindex="0" data-tooltip="Mỗi tệp tối đa 25 MB. Hỗ trợ đính kèm tài liệu và ảnh minh chứng tiến độ.">i</span>
+                </span>
+              </div>
+              <div class="report-file-picker-row" id="task-report-file-row">
+                <input id="task-report-file" class="is-custom-hidden" type="file" aria-describedby="task-report-file-help">
+                <label for="task-report-file" class="btn-file-icon" id="task-report-file-trigger" data-tooltip="Chọn tệp báo cáo (tối đa 25 MB)" aria-label="Chọn tệp báo cáo">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                </label>
+                <span id="task-report-file-name" class="report-file-name-pill" aria-live="polite">Chưa chọn tệp nào</span>
+              </div>
               <div class="task-detail-action-row">
                 <div id="assignee-report-actions" class="report-submit-actions" hidden>
                   <button type="submit" id="submit-progress-report" class="btn btn-secondary">Gửi báo cáo tiến độ</button>
                   <button type="submit" id="submit-completion-report" class="btn btn-primary">Gửi yêu cầu hoàn thành</button>
                 </div>
-                <div id="completion-withdraw-actions" class="report-submit-actions" hidden><button type="button" id="withdraw-completion-request" class="btn btn-secondary">Thu h&#7891;i y&#234;u c&#7847;u ho&#224;n th&#224;nh</button></div><div id="assignee-assignment-actions" class="task-assignment-buttons" hidden>
+                <div id="completion-withdraw-actions" class="report-submit-actions" hidden><button type="button" id="withdraw-completion-request" class="btn btn-secondary">Thu hồi yêu cầu hoàn thành</button></div><div id="assignee-assignment-actions" class="task-assignment-buttons" hidden>
                   <button type="button" id="accept-task-button" class="btn btn-primary">Nhận việc</button>
                   <button type="button" id="cancel-task-button" class="btn btn-danger">Hủy việc</button>
                 </div>

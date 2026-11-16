@@ -61,8 +61,24 @@ export const Auth = {
     return usersLoadPromise;
   },
 
-  getUsers() { return usersCache; },
+  getUsers() { return usersCache.map(user => ({ ...user })); },
   getCurrentUser() { return currentUser; },
+  async updateUser(userId, changes) {
+    this.lastError = '';
+    this.lastVerificationPreview = null;
+    const updated = await authRequest(`/auth/users/${encodeURIComponent(userId)}`, {
+      method: 'PUT',
+      body: JSON.stringify(changes)
+    });
+    if (updated?.verificationPreview) {
+      this.lastVerificationPreview = updated.verificationPreview;
+    }
+    usersCache = await authRequest('/auth/users');
+    if (currentUser && currentUser.id === userId) {
+      currentUser = usersCache.find(user => user.id === userId) || { ...currentUser, ...updated };
+    }
+    return updated;
+  },
   async login(username, password) {
     try {
       const result = await authRequest('/auth/login', { method: 'POST', body: JSON.stringify({ username, password }) });
@@ -79,12 +95,15 @@ export const Auth = {
       window.location.href = 'login.html';
     }
   },
+  lastError: '',
+  lastVerificationPreview: null,
   async saveUsers(nextUsers) {
     if (!Array.isArray(nextUsers) || !currentUser) return false;
     const previous = usersCache;
+    this.lastError = '';
+    this.lastVerificationPreview = null;
     try {
       const previousById = new Map(previous.map(user => [user.id, user]));
-      const nextById = new Map(nextUsers.map(user => [user.id, user]));
       for (const user of nextUsers) {
         const old = previousById.get(user.id);
         if (!old) {
@@ -95,16 +114,22 @@ export const Auth = {
           continue;
         }
         const changes = {};
-        ['name', 'avatar', 'avatarCrop', 'birthDate', 'hobbies', 'active', 'email', 'phone', 'currentPassword'].forEach(field => {
+        ['name', 'avatar', 'avatarCrop', 'coverImage', 'birthDate', 'hobbies', 'active', 'emailVerified', 'email', 'phone', 'currentPassword'].forEach(field => {
           if (old[field] !== user[field]) changes[field] = user[field];
         });
-        if (Object.keys(changes).length) await authRequest(`/auth/users/${encodeURIComponent(user.id)}`, { method: 'PUT', body: JSON.stringify(changes) });
+        if (Object.keys(changes).length) {
+          const updated = await authRequest(`/auth/users/${encodeURIComponent(user.id)}`, { method: 'PUT', body: JSON.stringify(changes) });
+          if (updated?.verificationPreview) {
+            this.lastVerificationPreview = updated.verificationPreview;
+          }
+        }
       }
       usersCache = await authRequest('/auth/users');
       if (currentUser) currentUser = usersCache.find(user => user.id === currentUser.id) || currentUser;
       return true;
     } catch (error) {
       console.error('Could not save accounts to database.', error);
+      this.lastError = error.message || 'Không thể lưu thông tin tài khoản.';
       usersCache = previous;
       return false;
     }
@@ -116,27 +141,65 @@ export const Auth = {
   async forgotPassword(email) {
     return authRequest('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) });
   },
-  async resetPassword(token, newPassword) {
-    return authRequest('/auth/reset-password', { method: 'POST', body: JSON.stringify({ token, newPassword }) });
+  async resetPassword(tokenOrOptions, newPassword) {
+    const payload = typeof tokenOrOptions === 'object' && tokenOrOptions !== null
+      ? tokenOrOptions
+      : { token: tokenOrOptions, newPassword };
+    return authRequest('/auth/reset-password', { method: 'POST', body: JSON.stringify(payload) });
   },
   async requestEmailVerification() {
     return authRequest('/auth/request-email-verification', { method: 'POST', body: '{}' });
   },
-  async verifyEmail(token) {
-    return authRequest('/auth/verify-email', { method: 'POST', body: JSON.stringify({ token }) });
+  async verifyEmail(tokenOrOptions) {
+    const payload = typeof tokenOrOptions === 'object' && tokenOrOptions !== null
+      ? tokenOrOptions
+      : { token: tokenOrOptions };
+    return authRequest('/auth/verify-email', { method: 'POST', body: JSON.stringify(payload) });
+  },
+  async sendDeadlineReminder(payload) {
+    return authRequest('/auth/deadline-reminder', { method: 'POST', body: JSON.stringify(payload || {}) });
   },
   canManageUsers() { return currentUser?.role === 'admin'; },
   canManageCategories() { return ['admin', 'manager'].includes(currentUser?.role); },
   canCreateTask() { return !!currentUser; },
   canManageTasks() { return ['admin', 'manager'].includes(currentUser?.role); },
-  canAccessTask(task) { const current = currentUser; return !!current && (current.role === 'admin' || (current.role === 'manager' && (task?.ownerId === current.id || task?.assigneeId === current.id)) || (current.role === 'user' && (task?.ownerId === current.id || task?.assigneeId === current.id))); },
+  canAccessTask(task) {
+    const current = currentUser;
+    if (!current) return false;
+    if (current.role === 'admin') return true;
+    const isOwner = task?.ownerId === current.id;
+    const isAssignee = task?.assigneeId === current.id || (Array.isArray(task?.assigneeIds) && task.assigneeIds.includes(current.id));
+    return isOwner || isAssignee;
+  },
   canUpdateTaskStatus() { return false; },
-  canReportTask(task) { const current = currentUser; return ['user', 'manager'].includes(current?.role) && task?.assigneeId === current.id && ['in-progress', 'needs-revision'].includes(task?.status) && task?.cancellationRequest?.status !== 'pending'; },
-  canManageSubtasks(task) { const current = currentUser; return !!current && (current.role === 'admin' ? !['completed', 'cancelled', 'awaiting-review'].includes(task?.status) : (task?.status !== 'awaiting-review' && (this.canEditTask(task) || (['user', 'manager'].includes(current.role) && task?.assigneeId === current.id && !['completed', 'cancelled'].includes(task?.status))))); },
-  canEditTask(task) { const current = currentUser; return !!current && (current.role === 'admin' || (current.role === 'manager' && (task?.ownerId === current.id || task?.assigneeId === current.id))); },
+  canReportTask(task) {
+    const current = currentUser;
+    const isAssignee = task?.assigneeId === current?.id || (Array.isArray(task?.assigneeIds) && task.assigneeIds.includes(current?.id));
+    return ['user', 'manager'].includes(current?.role) && isAssignee && ['in-progress', 'needs-revision'].includes(task?.status) && task?.cancellationRequest?.status !== 'pending';
+  },
+  canManageSubtasks(task) {
+    const current = currentUser;
+    if (!current) return false;
+    const isAssignee = task?.assigneeId === current.id || (Array.isArray(task?.assigneeIds) && task.assigneeIds.includes(current.id));
+    return current.role === 'admin'
+      ? !['completed', 'cancelled', 'awaiting-review'].includes(task?.status)
+      : (task?.status !== 'awaiting-review' && (this.canEditTask(task) || (['user', 'manager'].includes(current.role) && isAssignee && !['completed', 'cancelled'].includes(task?.status))));
+  },
+  canEditTask(task) {
+    const current = currentUser;
+    if (!current) return false;
+    if (current.role === 'admin') return true;
+    const isOwner = task?.ownerId === current.id;
+    const isAssignee = task?.assigneeId === current.id || (Array.isArray(task?.assigneeIds) && task.assigneeIds.includes(current.id));
+    return current.role === 'manager' && (isOwner || isAssignee);
+  },
   getTasks(tasks) {
     const current = currentUser;
     if (!current || current.role === 'admin') return tasks;
-    return tasks.filter(task => task.ownerId === current.id || task.assigneeId === current.id);
+    return tasks.filter(task => {
+      const isOwner = task.ownerId === current.id;
+      const isAssignee = task.assigneeId === current.id || (Array.isArray(task.assigneeIds) && task.assigneeIds.includes(current.id));
+      return isOwner || isAssignee;
+    });
   }
 };

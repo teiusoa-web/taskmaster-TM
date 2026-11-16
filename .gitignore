@@ -11,6 +11,9 @@ data/users.json
 data/users.json.tmp
 data/database.json
 data/database.json.tmp
+data/mail-outbox.json
+data/otps.json
+data/sessions.json
 data/*.tmp
 
 ## User generated uploads and backups
