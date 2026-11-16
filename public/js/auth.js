@@ -5,7 +5,8 @@ let usersLoadPromise = null;
 
 async function authRequest(path, options = {}) {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 8000);
+  const timeoutMs = Number(options.timeoutMs) || 45000;
+  const timeoutId = setTimeout(() => controller.abort('REQUEST_TIMEOUT'), timeoutMs);
   try {
     const response = await fetch(path, {
       ...options,
@@ -16,6 +17,11 @@ async function authRequest(path, options = {}) {
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(payload.error || `Authentication request failed (${response.status}).`);
     return payload;
+  } catch (error) {
+    if (error === 'REQUEST_TIMEOUT' || error?.name === 'AbortError' || controller.signal.aborted) {
+      throw new Error('Máy chủ đang khởi động hoặc phản hồi chậm. Vui lòng thử lại sau vài giây.');
+    }
+    throw error;
   } finally {
     clearTimeout(timeoutId);
   }
@@ -80,12 +86,18 @@ export const Auth = {
     return updated;
   },
   async login(username, password) {
+    this.lastError = '';
     try {
       const result = await authRequest('/auth/login', { method: 'POST', body: JSON.stringify({ username, password }) });
       currentUser = result.user;
       usersCache = await authRequest('/auth/users');
       return true;
-    } catch { currentUser = null; usersCache = []; return false; }
+    } catch (error) {
+      currentUser = null;
+      usersCache = [];
+      this.lastError = error?.message || '';
+      return false;
+    }
   },
   async logout() {
     try { await authRequest('/auth/logout', { method: 'POST', body: '{}' }); } finally {

@@ -1,5 +1,8 @@
 import { Auth } from './auth.js';
 
+// Đánh thức backend Render sớm trong nền ngay khi mở trang đăng nhập
+fetch('/health', { cache: 'no-store' }).catch(() => {});
+
 await Auth.loadUsers();
 if (Auth.getCurrentUser()) window.location.replace('index.html');
 
@@ -32,7 +35,7 @@ document.getElementById('login-form').addEventListener('submit', async event => 
   if (await Auth.login(data.get('username'), data.get('password'))) {
     window.location.href = 'index.html';
   } else {
-    errorEl.textContent = 'Tên đăng nhập hoặc mật khẩu không đúng, hoặc tài khoản đã bị khóa.';
+    errorEl.textContent = Auth.lastError || 'Tên đăng nhập hoặc mật khẩu không đúng, hoặc tài khoản đã bị khóa.';
     button.disabled = false;
     if (label) label.textContent = 'Đăng nhập';
   }
